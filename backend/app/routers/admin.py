@@ -7,25 +7,30 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.dependencies import require_admin
+from app.dependencies import require_admin, require_staff
 from app.models.branch import Branch
 from app.models.order import Order
 from app.models.product import Product
 from app.models.user import User
 from app.routers.branches import _build_response as _branch_resp
 from app.routers.orders import _build_order_response
-from app.schemas.order import OrderStatusUpdateRequest, PaginatedOrdersResponse
+from app.schemas.order import OrderStatusUpdateRequest, OrderStatusPatchRequest, PaginatedOrdersResponse
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
+
+# Import here to avoid circular imports
+from app.services.allocation_service import restore_inventory_on_cancel  # noqa: E402
 
 
 @router.get("/dashboard")
 def get_dashboard(
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_admin),
+    _staff: User = Depends(require_staff),
 ):
     def count(filt=None):
         q = db.query(func.count(Order.id))
+        if _staff.role == "BRANCH_MANAGER":
+            q = q.filter(Order.allocated_branch_id == _staff.branch_id)
         return (q.filter(filt).scalar() if filt is not None else q.scalar()) or 0
 
     total_orders = count()
@@ -35,11 +40,10 @@ def get_dashboard(
     cancelled = count(Order.status == "CANCELLED")
     pending = count(Order.status == "PENDING")
 
-    total_revenue = (
-        db.query(func.sum(Order.total_amount))
-        .filter(Order.status.in_(["ALLOCATED", "DELIVERED"]))
-        .scalar()
-    ) or 0.0
+    revenue_query = db.query(func.sum(Order.total_amount)).filter(Order.status.in_(["ALLOCATED", "DELIVERED"]))
+    if _staff.role == "BRANCH_MANAGER":
+        revenue_query = revenue_query.filter(Order.allocated_branch_id == _staff.branch_id)
+    total_revenue = revenue_query.scalar() or 0.0
 
     total_customers = (
         db.query(func.count(User.id)).filter(User.role == "CUSTOMER").scalar() or 0
@@ -87,9 +91,10 @@ def get_dashboard(
         {"status": "PENDING", "count": pending},
     ]
 
-    recent_orders = (
-        db.query(Order).order_by(Order.created_at.desc()).limit(5).all()
-    )
+    recent_query = db.query(Order)
+    if _staff.role == "BRANCH_MANAGER":
+        recent_query = recent_query.filter(Order.allocated_branch_id == _staff.branch_id)
+    recent_orders = recent_query.order_by(Order.created_at.desc()).limit(5).all()
 
     return {
         "summary": {
@@ -119,13 +124,17 @@ def list_all_orders(
     customer_id: Optional[int] = Query(None),
     search: Optional[str] = Query(None, description="Search by customer name or email"),
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_admin),
+    _staff: User = Depends(require_staff),
 ):
     query = db.query(Order)
+    
+    if _staff.role == "BRANCH_MANAGER":
+        query = query.filter(Order.allocated_branch_id == _staff.branch_id)
+    elif branch_id:
+        query = query.filter(Order.allocated_branch_id == branch_id)
+        
     if status_filter:
         query = query.filter(Order.status == status_filter.upper())
-    if branch_id:
-        query = query.filter(Order.allocated_branch_id == branch_id)
     if customer_id:
         query = query.filter(Order.customer_id == customer_id)
     if search:
@@ -155,12 +164,68 @@ def update_order_status(
     order_id: int,
     data: OrderStatusUpdateRequest,
     db: Session = Depends(get_db),
-    _admin: User = Depends(require_admin),
+    _staff: User = Depends(require_staff),
+):
+    """Legacy PUT endpoint — kept for backward compatibility."""
+    order = db.query(Order).filter(Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+        
+    if _staff.role == "BRANCH_MANAGER" and order.allocated_branch_id != _staff.branch_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this order")
+        
+    if data.status == "CANCELLED" and order.status not in ("CANCELLED", "DELIVERED"):
+        restore_inventory_on_cancel(db, order)
+    order.status = data.status
+    order.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(order)
+    return _build_order_response(db, order)
+
+
+@router.patch(
+    "/orders/{order_id}/status",
+    response_model=None,
+    summary="Update order status (Admin)",
+    description=(
+        "Transitions an order's status. "
+        "Side-effects: "
+        "(1) CANCELLED → inventory restored to the allocated branch. "
+        "(2) DELIVERED / CANCELLED → order excluded from branch active-workload."
+    ),
+)
+def patch_order_status(
+    order_id: int,
+    data: OrderStatusPatchRequest,
+    db: Session = Depends(get_db),
+    _staff: User = Depends(require_staff),
 ):
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
-    order.status = data.status
+
+    if _staff.role == "BRANCH_MANAGER" and order.allocated_branch_id != _staff.branch_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this order")
+
+    new_status = data.status
+    old_status = order.status
+
+    # Guard: already in a terminal state — no further transitions
+    if old_status in ("DELIVERED", "CANCELLED"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Order is already in a terminal state '{old_status}' and cannot be changed.",
+        )
+
+    # Side-effect 1: Restore inventory when cancelling an allocated order
+    if new_status == "CANCELLED" and order.allocated_branch_id is not None:
+        restore_inventory_on_cancel(db, order)
+
+    # Side-effect 2: DELIVERED and CANCELLED orders are automatically excluded from
+    # active-workload calculations because allocation_service filters on
+    # status IN ('ALLOCATED', 'PENDING') — no extra action needed here.
+
+    order.status = new_status
     order.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(order)

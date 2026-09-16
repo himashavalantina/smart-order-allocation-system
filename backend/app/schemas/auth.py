@@ -28,6 +28,7 @@ class TokenResponse(BaseModel):
     email: str
     full_name: str
     role: str
+    branch_id: Optional[int] = None
 
 
 class UserResponse(BaseModel):
@@ -37,6 +38,7 @@ class UserResponse(BaseModel):
     email: str
     full_name: str
     role: str
+    branch_id: Optional[int] = None
     mobile_number: Optional[str] = None
     address_line_1: Optional[str] = None
     address_line_2: Optional[str] = None

@@ -31,8 +31,17 @@ class OrderCreateRequest(BaseModel):
 
 
 class OrderStatusUpdateRequest(BaseModel):
+    """Used by the existing PUT endpoint (kept for backward compatibility)."""
     status: str = Field(
-        pattern="^(ALLOCATED|UNALLOCATED|CANCELLED|DELIVERED|PENDING)$"
+        pattern="^(ALLOCATED|UNALLOCATED|CANCELLED|DELIVERED|PENDING|PROCESSING)$"
+    )
+
+
+class OrderStatusPatchRequest(BaseModel):
+    """Used by the new PATCH /admin/orders/{id}/status endpoint."""
+    status: str = Field(
+        pattern="^(ALLOCATED|PROCESSING|DELIVERED|CANCELLED)$",
+        description="Valid transitions: ALLOCATED → PROCESSING → DELIVERED | CANCELLED",
     )
 
 
@@ -53,6 +62,10 @@ class OrderResponse(BaseModel):
     allocated_branch_id: Optional[int] = None
     allocated_branch_name: Optional[str] = None
     customer_note: Optional[str] = None
+    # Canonical AI classification fields
+    ai_category: Optional[str] = None
+    ai_confidence: Optional[float] = None
+    # Legacy fields (kept for existing UI components)
     note_category: Optional[str] = None
     note_confidence: Optional[float] = None
     note_needs_review: Optional[bool] = None

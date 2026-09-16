@@ -1,3 +1,4 @@
+import logging
 import math
 from datetime import datetime
 from typing import Optional
@@ -19,9 +20,10 @@ from app.schemas.order import (
     OrderItemResponse,
 )
 from app.services.allocation_service import allocate_order, restore_inventory_on_cancel
-from app.services.classification_service import classify_message
+from app.services.ml_classifier import classify_message
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
+logger = logging.getLogger(__name__)
 
 
 def _build_order_response(db: Session, order: Order) -> OrderResponse:
@@ -54,6 +56,8 @@ def _build_order_response(db: Session, order: Order) -> OrderResponse:
         allocated_branch_id=order.allocated_branch_id,
         allocated_branch_name=branch_name,
         customer_note=order.customer_note,
+        ai_category=order.ai_category or order.note_category,
+        ai_confidence=order.ai_confidence if order.ai_confidence is not None else order.note_confidence,
         note_category=order.note_category,
         note_confidence=order.note_confidence,
         note_needs_review=order.note_needs_review,
@@ -128,15 +132,18 @@ def create_order(
 
 
 
-    # Classify note if present (gracefully skip if model not trained)
-    if data.customer_note:
+    # Classify note with in-memory ML model (always available — no pkl required)
+    if data.customer_note and data.customer_note.strip():
         try:
             result = classify_message(data.customer_note)
+            order.ai_category = result["category"]
+            order.ai_confidence = result["confidence"]
+            # Write to legacy fields too so existing UI still works
             order.note_category = result["category"]
             order.note_confidence = result["confidence"]
             order.note_needs_review = result["needs_review"]
-        except FileNotFoundError:
-            pass  # Model not trained yet — classification skipped
+        except Exception as exc:
+            logger.warning("ML classification failed: %s", exc)
 
     db.add(order)
     db.flush()  # Obtain order.id without committing

@@ -124,11 +124,18 @@ try:
     print("[INFO] Creating branches...")
     branches = [
         Branch(
-            name="Colombo Central Branch",
+            name="Colombo 03 Branch",
             address="123 Galle Road, Colombo 03",
             location_lat=6.9056,
             location_lng=79.8523,
-            city="Colombo",
+            city="Colombo 03",
+        ),
+        Branch(
+            name="Colombo 07 Branch",
+            address="45 Ward Place, Colombo 07",
+            location_lat=6.9145,
+            location_lng=79.8655,
+            city="Colombo 07",
         ),
         Branch(
             name="Kandy Highland Branch",
@@ -164,6 +171,25 @@ try:
     db.commit()
     for b in branches:
         db.refresh(b)
+
+    print("[INFO] Creating branch managers...")
+    manager = User(
+        email="manager@colombo03.com",
+        hashed_password=hash_password("Manager@123"),
+        full_name="Colombo 03 Manager",
+        role="BRANCH_MANAGER",
+        mobile_number="0779998888",
+        address_line_1="Colombo 03 Branch Office",
+        address_line_2="",
+        postal_code="00300",
+        location_city="Colombo 03",
+        location_district="Colombo",
+        location_lat=6.9056,
+        location_lng=79.8523,
+        branch_id=branches[0].id,
+    )
+    db.add(manager)
+    db.commit()
 
     # -- Products -------------------------------------------------------------
     print("[INFO] Creating products...")
@@ -219,6 +245,7 @@ try:
     print("  Demo Credentials (Sri Lankan Addresses)")
     print("=" * 52)
     print("  Admin:    admin@orderalloc.lk   / Admin@123")
+    print("  Manager:  manager@colombo03.com / Manager@123 (Colombo 03 Branch)")
     print("  Customer: kavya@example.com     / Customer@123 (Postal Code: 00300 - Colombo 03)")
     print("  Customer: rahul@example.com     / Customer@123 (Postal Code: 20000 - Kandy)")
     print("  Customer: nisha@example.com     / Customer@123 (Postal Code: 80000 - Galle)")

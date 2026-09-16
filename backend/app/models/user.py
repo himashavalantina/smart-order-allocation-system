@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
@@ -12,7 +12,8 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
     full_name = Column(String(255), nullable=False)
-    role = Column(String(20), nullable=False, default="CUSTOMER")  # CUSTOMER | ADMIN
+    role = Column(String(20), nullable=False, default="CUSTOMER")  # CUSTOMER | ADMIN | BRANCH_MANAGER
+    branch_id = Column(Integer, ForeignKey("branches.id", ondelete="SET NULL"), nullable=True)
 
     # Sri Lankan Address Data
     mobile_number = Column(String(20), nullable=True)

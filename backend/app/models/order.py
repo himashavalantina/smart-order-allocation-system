@@ -16,11 +16,15 @@ class Order(Base):
         Integer, ForeignKey("branches.id", ondelete="SET NULL"), nullable=True, index=True
     )
 
-    # Status lifecycle: PENDING -> ALLOCATED | UNALLOCATED -> DELIVERED | CANCELLED
+    # Status lifecycle: PENDING → ALLOCATED | UNALLOCATED → PROCESSING → DELIVERED | CANCELLED
     status = Column(String(20), nullable=False, default="PENDING", index=True)
 
-    # Customer note + AI classification result
+    # Customer note + AI/ML classification result
     customer_note = Column(Text, nullable=True)
+    # Primary AI fields (new canonical names)
+    ai_category = Column(String(100), nullable=True)
+    ai_confidence = Column(Float, nullable=True)
+    # Legacy aliases kept for backward compatibility
     note_category = Column(String(100), nullable=True)
     note_confidence = Column(Float, nullable=True)
     note_needs_review = Column(Boolean, nullable=True)

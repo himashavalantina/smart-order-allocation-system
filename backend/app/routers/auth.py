@@ -42,8 +42,8 @@ def register(
     db: Session = Depends(get_db),
 ):
     user = register_user(db, data)
-    access_token = create_access_token({"sub": str(user.id), "role": user.role})
-    refresh_token = create_refresh_token({"sub": str(user.id), "role": user.role})
+    access_token = create_access_token({"sub": str(user.id), "role": user.role, "branch_id": user.branch_id})
+    refresh_token = create_refresh_token({"sub": str(user.id), "role": user.role, "branch_id": user.branch_id})
     _set_refresh_cookie(response, refresh_token)
     return TokenResponse(
         access_token=access_token,
@@ -51,6 +51,7 @@ def register(
         email=user.email,
         full_name=user.full_name,
         role=user.role,
+        branch_id=user.branch_id,
     )
 
 
@@ -63,8 +64,8 @@ def login(
     db: Session = Depends(get_db),
 ):
     user = authenticate_user(db, data.email, data.password)
-    access_token = create_access_token({"sub": str(user.id), "role": user.role})
-    refresh_token = create_refresh_token({"sub": str(user.id), "role": user.role})
+    access_token = create_access_token({"sub": str(user.id), "role": user.role, "branch_id": user.branch_id})
+    refresh_token = create_refresh_token({"sub": str(user.id), "role": user.role, "branch_id": user.branch_id})
     _set_refresh_cookie(response, refresh_token)
     return TokenResponse(
         access_token=access_token,
@@ -72,6 +73,7 @@ def login(
         email=user.email,
         full_name=user.full_name,
         role=user.role,
+        branch_id=user.branch_id,
     )
 
 
@@ -102,8 +104,8 @@ def refresh(
             detail="User not found or deactivated",
         )
 
-    new_access = create_access_token({"sub": str(user.id), "role": user.role})
-    new_refresh = create_refresh_token({"sub": str(user.id), "role": user.role})
+    new_access = create_access_token({"sub": str(user.id), "role": user.role, "branch_id": user.branch_id})
+    new_refresh = create_refresh_token({"sub": str(user.id), "role": user.role, "branch_id": user.branch_id})
     _set_refresh_cookie(response, new_refresh)
 
     return TokenResponse(
@@ -112,6 +114,7 @@ def refresh(
         email=user.email,
         full_name=user.full_name,
         role=user.role,
+        branch_id=user.branch_id,
     )
 
 

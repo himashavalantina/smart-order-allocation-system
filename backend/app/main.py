@@ -14,6 +14,7 @@ from app.utils.location_service import load_postal_codes
 import app.models  # noqa: F401
 
 from app.routers import auth, orders, branches, products, admin, classify, locations
+from app.routers import support, branch_inventory
 
 logging.basicConfig(
     level=logging.INFO,
@@ -62,6 +63,8 @@ app.include_router(products.router)
 app.include_router(admin.router)
 app.include_router(classify.router)
 app.include_router(locations.router)
+app.include_router(support.router)
+app.include_router(branch_inventory.router)
 
 
 @app.get("/health", tags=["Health"])
