@@ -171,8 +171,11 @@ def update_order_status(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
         
-    if _staff.role == "BRANCH_MANAGER" and order.allocated_branch_id != _staff.branch_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this order")
+    if _staff.role == "BRANCH_MANAGER" and str(order.allocated_branch_id) != str(_staff.branch_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"Not authorized to update this order. Order branch: {order.allocated_branch_id}, Your branch: {_staff.branch_id}"
+        )
         
     if data.status == "CANCELLED" and order.status not in ("CANCELLED", "DELIVERED"):
         restore_inventory_on_cancel(db, order)
@@ -204,8 +207,11 @@ def patch_order_status(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
 
-    if _staff.role == "BRANCH_MANAGER" and order.allocated_branch_id != _staff.branch_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this order")
+    if _staff.role == "BRANCH_MANAGER" and str(order.allocated_branch_id) != str(_staff.branch_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"Not authorized to update this order. Order branch: {order.allocated_branch_id}, Your branch: {_staff.branch_id}"
+        )
 
     new_status = data.status
     old_status = order.status
