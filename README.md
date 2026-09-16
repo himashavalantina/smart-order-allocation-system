@@ -1,129 +1,110 @@
-# 🚚 Smart Order Allocation System
+# Smart Order Allocation System
 
-A full-stack, enterprise-ready **Smart Order Allocation System** built for multi-branch retail businesses. The system intelligently allocates incoming customer orders to the best eligible branch using a multi-criteria scoring algorithm considering **location proximity**, **stock availability**, and **branch workload capacity**. It also includes an integrated **ML NLP customer note classifier** trained on customer service request data.
+A comprehensive, full-stack application built for the Software Engineer Intern Technical Assessment. This system intelligently allocates incoming customer e-commerce orders to the optimal branch based on stock availability, geographic location, and branch workload. 
 
----
-
-## 🌟 Key Features
-
-1. **Automatic 3-Phase Branch Allocation**:
-   - **Phase 1 (Stock Availability Filter)**: Identifies branches with 100% stock for all ordered items.
-   - **Phase 2 (Workload Filter)**: Excludes branches exceeding maximum active order capacity.
-   - **Phase 3 (Multi-Criteria Scoring Engine)**: Scores remaining candidates using weighted factors:
-     $$\text{Score} = (0.50 \times \text{Distance Score}) + (0.30 \times \text{Workload Score}) + (0.20 \times \text{Stock Score})$$
-2. **Order Management & Cancellation Handling**:
-   - Real-time stock reservation upon allocation.
-   - Atomic inventory restoration & workload reduction when orders are cancelled.
-3. **Machine Learning Customer Support AI**:
-   - Trained on `dataset.csv` using TF-IDF + Logistic Regression.
-   - Classifies customer order notes automatically into categories (Delivery Issue, Refund Request, Urgent Note, etc.) with confidence thresholding and manual review flags.
-4. **Interactive Dashboards**:
-   - **Customer Portal**: Browse active product catalog, place multi-item orders, track order allocation & delivery timeline, cancel active orders.
-   - **Admin Command Center**: Real-time KPI overview, revenue metrics, status distribution, branch workload monitoring, inventory management, and manual order re-allocation.
-5. **Security & Production Best Practices**:
-   - Role-Based Access Control (RBAC with JWT + bcrypt).
-   - Rate limiting middleware (60 req/min for public routes, 120 req/min for auth routes).
-   - Standardized HTTP error handling & Pydantic request validation.
+## 🚀 Live Application URL & Repository
+- **GitHub Repository URL**: [Your GitHub URL Here]
+- **Live Application URL**: [Your Live URL Here] *(If deployed)*
 
 ---
 
-## 🏗️ Tech Stack
-
-- **Backend**: Python 3.10+, FastAPI, SQLAlchemy, SQLite, Pydantic v2, Scikit-Learn, PyJWT, bcrypt.
-- **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Lucide Icons, Axios, Zustand state management.
-- **ML / AI**: Scikit-Learn (TF-IDF Vectorizer + Logistic Classifier).
+## 💻 Technologies Used
+- **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Zustand, Lucide Icons.
+- **Backend:** Python 3.10+, FastAPI, SQLAlchemy (ORM), SQLite.
+- **AI/ML:** Scikit-Learn (TF-IDF Vectorizer + Naive Bayes/Logistic Regression), Pandas.
+- **Security:** PyJWT, passlib/bcrypt (Secure Password Hashing), python-dotenv.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🛠️ Setup Instructions
 
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+ & npm
 
-### 1. Start the Backend Server
-
+### 1. Backend Setup
+Navigate to the backend directory and set up the Python environment:
 ```bash
-# Navigate to backend directory
 cd backend
-
-# Create virtual environment (optional)
 python -m venv venv
-# On Windows:
-venv\Scripts\activate
-# On Linux/macOS:
-# source venv/bin/activate
-
-# Install dependencies
+# Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
 pip install -r requirements.txt
+```
 
-# Train the ML Support Classifier
+Train the ML model and seed the database with mock data:
+```bash
 python train.py
-
-# Seed the database with sample branches, products, inventory, and users
 python seed.py
+```
 
-# Run backend server
+Run the backend server:
+```bash
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+*(The backend API will be available at http://localhost:8000. Interactive docs at http://localhost:8000/docs)*
 
-- **Interactive API Documentation (Swagger)**: [http://localhost:8000/docs](http://localhost:8000/docs)
-
----
-
-### 2. Start the Frontend Application
-
+### 2. Frontend Setup
+Open a new terminal and navigate to the frontend directory:
 ```bash
-# Open a new terminal and navigate to frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Run dev server
 npm run dev
 ```
+*(The frontend will be available at http://localhost:3000)*
 
-- **Application URL**: [http://localhost:3000](http://localhost:3000)
-
----
-
-## 🔑 Demo Login Credentials
-
+### 3. Demo Credentials
 | Role | Email | Password |
 | :--- | :--- | :--- |
 | **System Admin** | `admin@orderalloc.lk` | `Admin@123` |
-| **Customer 1 (Colombo)** | `customer1@example.com` | `Customer@123` |
-| **Customer 2 (Kandy)** | `customer2@example.com` | `Customer@123` |
-| **Customer 3 (Galle)** | `customer3@example.com` | `Customer@123` |
+| **Branch Manager** | `manager@colombo03.com` | `Manager@123` |
+| **Customer (Colombo)** | `kavya@example.com` | `Customer@123` |
+| **Customer (Kandy)** | `rahul@example.com` | `Customer@123` |
 
 ---
 
-## 📐 Project Structure
+## 🏛️ System Architecture
+The application follows a decoupled client-server architecture:
+1. **Frontend (Client):** A responsive Single Page Application (SPA) built with Next.js and Tailwind CSS. It communicates securely with the backend via REST APIs using Axios. State is managed globally via Zustand.
+2. **Backend (API):** A fast, asynchronous REST API powered by FastAPI. It handles routing, Pydantic data validation, JWT authentication, and dependency injection.
+3. **Database (Data Layer):** SQLite is used for persistent storage, managed via SQLAlchemy ORM for clean, Pythonic queries and relationships.
+4. **AI/ML Service:** An integrated Python pipeline that loads a pre-trained scikit-learn model into memory to classify incoming order notes on-the-fly.
 
-```
-orderallocation/
-├── backend/
-│   ├── app/
-│   │   ├── config.py              # App & database configurations
-│   │   ├── database.py            # SQLAlchemy setup
-│   │   ├── dependencies.py        # Auth & RBAC dependencies
-│   │   ├── main.py                # FastAPI application setup & CORS
-│   │   ├── middleware.py          # Rate limiting middleware
-│   │   ├── models/                # SQLAlchemy database models
-│   │   ├── schemas/               # Pydantic validation models
-│   │   ├── services/              # Allocation engine, ML inference, Auth
-│   │   ├── routers/               # API route handlers
-│   │   └── ml/                    # Training dataset & model.pkl artifact
-│   ├── seed.py                    # Database seeder script
-│   ├── train.py                   # ML model trainer script
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── app/                   # Next.js 16 App Router pages
-│   │   ├── components/            # Reusable UI components & modals
-│   │   ├── lib/                   # API client, types, and utility functions
-│   │   └── store/                 # Zustand state stores
-│   └── package.json
-└── README.md
-```
+---
+
+## 🧠 Branch Allocation Logic
+When a customer places an order, the system determines the best branch using a **Multi-Criteria Scoring Algorithm**. 
+
+### The Approach:
+1. **Phase 1 (Strict Stock Filter):** The system first queries the database for branches that have **100% stock availability** for all requested items. If a branch is missing even one item, it is immediately eliminated.
+2. **Phase 2 (Scoring):** The remaining eligible branches are scored based on:
+   - **Proximity (Distance):** Calculated using the Haversine formula based on the latitude/longitude of the customer's postal code and the branch's location. Closer branches get better scores.
+   - **Workload Penalty:** The system checks how many *Active (Pending/Accepted)* orders a branch currently has. High workload reduces the branch's score to prevent bottlenecks.
+3. **Phase 3 (Allocation):** The branch with the best combined score is assigned the order. Inventory is atomically reserved in the database.
+
+### Why this approach?
+I chose this approach because a purely distance-based allocation would quickly overwhelm a central branch (e.g., Colombo) while leaving regional branches idle. By incorporating a "Workload Penalty," the system dynamically balances the load across the business. If no branch has stock, the order is gracefully flagged as "Unallocated" rather than failing, allowing managers to restock and allocate later.
+
+---
+
+## 🔒 Authentication & Security Approach
+Security was prioritized across the stack:
+1. **Passwords:** Stored securely using `bcrypt` hashing. Plaintext passwords never touch the database.
+2. **Authentication:** Implemented using JSON Web Tokens (JWT) with expiration times. The frontend stores tokens securely and attaches them as Bearer tokens to protected requests.
+3. **Role-Based Access Control (RBAC):** Users are assigned roles (`ADMIN`, `BRANCH_MANAGER`, `CUSTOMER`). API routes use dependency injection (`require_admin`, `require_branch_manager`) to explicitly block unauthorized horizontal/vertical access. A customer modifying local storage data cannot trick the backend into granting admin access.
+4. **Input Validation:** FastAPI and Pydantic enforce strict payload schemas, rejecting invalid or malicious payloads before they hit business logic.
+5. **Secrets:** Private keys for JWT generation are handled securely via `.env` files.
+
+---
+
+## ⚠️ Assumptions & Limitations
+1. **Location Data:** Instead of utilizing real-time GPS hardware, the system assumes customer locations based on the centroid latitude/longitude of their selected Sri Lankan Postal Code. 
+2. **Database:** SQLite is used to simplify the assessment setup and evaluation. In a true production environment, this would be swapped to PostgreSQL.
+3. **Concurrency:** While inventory checks are transactional, under extreme hyper-concurrency (thousands of orders per second), a more robust distributed lock (e.g., Redis) would be ideal to prevent race conditions on stock.
+
+---
+
+## 🤖 AI / ML Approach (Bonus Challenge)
+An AI classifier was built to automatically categorize customer order notes (e.g., "Payment Issue", "Delivery Issue") to assist admins in triaging issues.
+1. **Dataset & Preprocessing:** The provided dataset was cleaned, and text features were extracted using a `TfidfVectorizer`.
+2. **Model Training:** A Scikit-Learn `MultinomialNB` (Naive Bayes) classifier was trained. (The script is provided in `train.py`).
+3. **Inference & Fallback:** When a customer submits a note, the backend predicts the category and calculates a confidence score (probability). If the confidence is below a defined threshold (e.g., 50%), the system gracefully falls back to "General Inquiry / Uncategorized" rather than making an inaccurate guess.
