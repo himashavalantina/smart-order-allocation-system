@@ -75,14 +75,14 @@ The application follows a decoupled client-server architecture:
 When a customer places an order, the system determines the best branch using a **Multi-Criteria Scoring Algorithm**. 
 
 ### The Approach:
-1. **Phase 1 (Strict Stock Filter):** The system first queries the database for branches that have **100% stock availability** for all requested items. If a branch is missing even one item, it is immediately eliminated.
+1. **Phase 1 (Strict Stock Filter):** The system queries the database for branches that have **100% stock availability** for all requested items. If the closest branch is missing even one item, it is immediately eliminated, and the system looks for the second closest branch that has the complete stock.
 2. **Phase 2 (Scoring):** The remaining eligible branches are scored based on:
-   - **Proximity (Distance):** Calculated using the Haversine formula based on the latitude/longitude of the customer's postal code and the branch's location. Closer branches get better scores.
+   - **Proximity (Distance):** A customer's delivery location is resolved by mapping their **Sri Lankan Postal Code** to its geographic latitude and longitude centroid. The Haversine formula calculates the exact distance to each branch. Closer branches get better scores.
    - **Workload Penalty:** The system checks how many *Active (Pending/Accepted)* orders a branch currently has. High workload reduces the branch's score to prevent bottlenecks.
-3. **Phase 3 (Allocation):** The branch with the best combined score is assigned the order. Inventory is atomically reserved in the database.
+3. **Phase 3 (Tie-Breakers & Allocation):** If a customer is located exactly in the middle of two equidistant branches, the system's scoring automatically acts as a tie-breaker, awarding the order to the branch with the lower active workload (or higher relative stock score). Inventory is then atomically reserved in the database.
 
 ### Why this approach?
-I chose this approach because a purely distance-based allocation would quickly overwhelm a central branch (e.g., Colombo) while leaving regional branches idle. By incorporating a "Workload Penalty," the system dynamically balances the load across the business. If no branch has stock, the order is gracefully flagged as "Unallocated" rather than failing, allowing managers to restock and allocate later.
+I chose this approach because a purely distance-based allocation would quickly overwhelm a central branch (e.g., Colombo) while leaving regional branches idle. By incorporating a "Workload Penalty" and "Postal Code Centroids," the system dynamically balances the load across the business without needing physical GPS tracking. If no branch in the entire network has stock, the order is gracefully flagged as "Unallocated" rather than failing, allowing managers to restock and allocate later.
 
 ---
 
