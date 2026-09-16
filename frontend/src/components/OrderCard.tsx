@@ -19,8 +19,11 @@ export default function OrderCard({ order, onCancel, showCustomer }: Props) {
   const [cancelling, setCancelling] = useState(false);
 
   const canCancel = !["CANCELLED", "DELIVERED"].includes(order.status);
-  const noteCategoryColor = order.note_category
-    ? CATEGORY_COLORS[order.note_category] || "text-slate-400 bg-slate-400/10 border-slate-400/30"
+  // Prefer the canonical ai_* fields; fall back to legacy note_* for older orders
+  const displayCategory = order.ai_category ?? order.note_category;
+  const displayConfidence = order.ai_confidence ?? order.note_confidence;
+  const noteCategoryColor = displayCategory
+    ? CATEGORY_COLORS[displayCategory] || "text-slate-400 bg-slate-400/10 border-slate-400/30"
     : "";
 
   return (
@@ -89,7 +92,7 @@ export default function OrderCard({ order, onCancel, showCustomer }: Props) {
               <p className="text-slate-300 text-xs bg-white/3 rounded-lg px-3 py-2 border border-white/5">
                 {order.customer_note}
               </p>
-              {order.note_category && (
+              {displayCategory && (
                 <div className="flex items-center gap-2">
                   <span
                     className={cn(
@@ -97,10 +100,10 @@ export default function OrderCard({ order, onCancel, showCustomer }: Props) {
                       noteCategoryColor
                     )}
                   >
-                    {order.note_category}
+                    {displayCategory}
                   </span>
                   <span className="text-slate-500 text-xs">
-                    {order.note_confidence ? formatConfidence(order.note_confidence) : ""}
+                    {displayConfidence ? formatConfidence(displayConfidence) : ""}
                     {order.note_needs_review && " · Needs Review"}
                   </span>
                 </div>

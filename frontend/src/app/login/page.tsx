@@ -22,7 +22,15 @@ export default function LoginPage() {
     try {
       await login(email, password);
       const store = useAuthStore.getState();
-      router.push(store.user?.role === "ADMIN" ? "/admin" : "/dashboard");
+      
+      let redirectPath = "/dashboard";
+      if (store.user?.role === "ADMIN") {
+        redirectPath = "/admin";
+      } else if (store.user?.role === "BRANCH_MANAGER") {
+        redirectPath = "/branch-dashboard";
+      }
+      
+      router.push(redirectPath);
     } catch (err: any) {
       setError(err.response?.data?.detail || "Login failed. Please check your credentials.");
     } finally {
@@ -121,6 +129,7 @@ export default function LoginPage() {
           <div className="space-y-1">
             {[
               { label: "Admin", email: "admin@orderalloc.lk", pass: "Admin@123" },
+              { label: "Manager", email: "manager@colombo03.com", pass: "Manager@123" },
               { label: "Customer", email: "kavya@example.com", pass: "Customer@123" },
             ].map((cred) => (
               <button

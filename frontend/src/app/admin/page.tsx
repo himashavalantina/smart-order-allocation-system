@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import StatsCard from "@/components/StatsCard";
-import OrderCard from "@/components/OrderCard";
+import AdminOrderRow from "@/components/AdminOrderRow";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useAuthStore } from "@/store/authStore";
 import { AdminDashboard } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import api from "@/lib/api";
@@ -43,14 +44,26 @@ const STATUS_CHART_COLORS: Record<string, string> = {
 };
 
 export default function AdminDashboardPage() {
+  const { user } = useAuthStore();
+  const isBranchManager = user?.role === "BRANCH_MANAGER";
+  
   const [data, setData] = useState<AdminDashboard | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchDashboard = () => {
     api.get<AdminDashboard>("/admin/dashboard")
       .then(({ data }) => setData(data))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchDashboard();
   }, []);
+
+  const handleStatusChange = async (orderId: number, newStatus: string) => {
+    await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
+    fetchDashboard();
+  };
 
   if (loading) {
     return (
@@ -74,8 +87,12 @@ export default function AdminDashboardPage() {
       <div className="page-wrapper">
         <div className="container-main">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
-            <p className="text-slate-400 text-sm mt-1">System overview and analytics</p>
+            <h1 className="text-2xl font-bold text-white">
+              {isBranchManager ? "Branch Dashboard" : "Admin Dashboard"}
+            </h1>
+            <p className="text-slate-400 text-sm mt-1">
+              {isBranchManager ? "Branch overview and analytics" : "System overview and analytics"}
+            </p>
           </div>
 
           {/* Primary Stats */}
@@ -83,7 +100,9 @@ export default function AdminDashboardPage() {
             <StatsCard label="Total Orders" value={summary.total_orders} icon={ShoppingCart} iconColor="text-indigo-400" />
             <StatsCard label="Total Revenue" value={formatCurrency(summary.total_revenue)} icon={DollarSign} iconColor="text-emerald-400" />
             <StatsCard label="Total Customers" value={summary.total_customers} icon={Users} iconColor="text-cyan-400" />
-            <StatsCard label="Active Branches" value={summary.total_branches} icon={Store} iconColor="text-violet-400" />
+            {!isBranchManager && (
+              <StatsCard label="Active Branches" value={summary.total_branches} icon={Store} iconColor="text-violet-400" />
+            )}
           </div>
 
           {/* Secondary Stats */}
@@ -95,7 +114,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className={`grid grid-cols-1 ${!isBranchManager ? "lg:grid-cols-2" : ""} gap-6 mb-8`}>
             {/* Status Distribution Pie */}
             <div className="glass-card p-5">
               <h2 className="text-white font-semibold text-sm mb-4 flex items-center gap-2">
@@ -135,28 +154,30 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Branch Workload Bar */}
-            <div className="glass-card p-5">
-              <h2 className="text-white font-semibold text-sm mb-4 flex items-center gap-2">
-                <BarChart2 className="w-4 h-4 text-violet-400" />
-                Branch Workload (Active Orders)
-              </h2>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={branch_workload} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                  <XAxis
-                    dataKey="city"
-                    tick={{ fill: "#64748b", fontSize: 10 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    contentStyle={{ background: "#0f1424", border: "1px solid rgba(99,102,241,0.2)", borderRadius: "8px", color: "#f1f5f9", fontSize: "12px" }}
-                  />
-                  <Bar dataKey="active_orders" fill="#6366f1" radius={[4, 4, 0, 0]} name="Active Orders" />
-                  <Bar dataKey="total_orders" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Total Orders" opacity={0.4} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {!isBranchManager && (
+              <div className="glass-card p-5">
+                <h2 className="text-white font-semibold text-sm mb-4 flex items-center gap-2">
+                  <BarChart2 className="w-4 h-4 text-violet-400" />
+                  Branch Workload (Active Orders)
+                </h2>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={branch_workload} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                    <XAxis
+                      dataKey="city"
+                      tick={{ fill: "#64748b", fontSize: 10 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <Tooltip
+                      contentStyle={{ background: "#0f1424", border: "1px solid rgba(99,102,241,0.2)", borderRadius: "8px", color: "#f1f5f9", fontSize: "12px" }}
+                    />
+                    <Bar dataKey="active_orders" fill="#6366f1" radius={[4, 4, 0, 0]} name="Active Orders" />
+                    <Bar dataKey="total_orders" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Total Orders" opacity={0.4} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
 
           {/* Recent Orders */}
@@ -167,7 +188,7 @@ export default function AdminDashboardPage() {
             </h2>
             <div className="space-y-3">
               {recent_orders.map((order) => (
-                <OrderCard key={order.id} order={order} showCustomer />
+                <AdminOrderRow key={order.id} order={order} onStatusChange={handleStatusChange} />
               ))}
             </div>
           </div>

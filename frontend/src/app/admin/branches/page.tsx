@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -15,6 +16,7 @@ import {
   X,
   Plus,
   Store,
+  LayoutDashboard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -109,6 +111,13 @@ export default function AdminBranchesPage() {
                           </div>
                         </div>
                       </div>
+                      <Link
+                        href={`/admin/branches/${branch.id}`}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium hover:bg-indigo-500/20 transition-all shrink-0"
+                      >
+                        <LayoutDashboard className="w-3.5 h-3.5" />
+                        Dashboard
+                      </Link>
                     </div>
                   </div>
 

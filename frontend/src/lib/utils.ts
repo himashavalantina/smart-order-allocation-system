@@ -31,6 +31,7 @@ export function formatConfidence(confidence: number): string {
 export const STATUS_COLORS: Record<OrderStatus, string> = {
   PENDING: "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",
   ALLOCATED: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30",
+  PROCESSING: "text-sky-400 bg-sky-400/10 border-sky-400/30",
   UNALLOCATED: "text-red-400 bg-red-400/10 border-red-400/30",
   CANCELLED: "text-slate-400 bg-slate-400/10 border-slate-400/30",
   DELIVERED: "text-indigo-400 bg-indigo-400/10 border-indigo-400/30",
@@ -39,6 +40,7 @@ export const STATUS_COLORS: Record<OrderStatus, string> = {
 export const STATUS_LABELS: Record<OrderStatus, string> = {
   PENDING: "Pending",
   ALLOCATED: "Allocated",
+  PROCESSING: "Processing",
   UNALLOCATED: "Unallocated",
   CANCELLED: "Cancelled",
   DELIVERED: "Delivered",
@@ -47,10 +49,15 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
 export const CATEGORY_COLORS: Record<string, string> = {
   "Payment Issue": "text-rose-400 bg-rose-400/10 border-rose-400/30",
   "Delivery Issue": "text-amber-400 bg-amber-400/10 border-amber-400/30",
+  "Refund": "text-purple-400 bg-purple-400/10 border-purple-400/30",
   "Refund/Cancellation": "text-purple-400 bg-purple-400/10 border-purple-400/30",
-  "Order Status Inquiry": "text-sky-400 bg-sky-400/10 border-sky-400/30",
+  "Product Inquiry": "text-cyan-400 bg-cyan-400/10 border-cyan-400/30",
   "Product/Stock Inquiry": "text-cyan-400 bg-cyan-400/10 border-cyan-400/30",
+  "Order Status": "text-sky-400 bg-sky-400/10 border-sky-400/30",
+  "Order Status Inquiry": "text-sky-400 bg-sky-400/10 border-sky-400/30",
+  "Account Issue": "text-orange-400 bg-orange-400/10 border-orange-400/30",
   "Account/Login Issue": "text-orange-400 bg-orange-400/10 border-orange-400/30",
+  "Promotion": "text-lime-400 bg-lime-400/10 border-lime-400/30",
   "Promotion/Discount Inquiry": "text-lime-400 bg-lime-400/10 border-lime-400/30",
   "General Inquiry": "text-slate-400 bg-slate-400/10 border-slate-400/30",
   "Needs Manual Review": "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",

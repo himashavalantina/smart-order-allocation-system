@@ -25,12 +25,19 @@ export default function Navbar() {
   };
 
   const isAdmin = user?.role === "ADMIN";
+  const isBranchManager = user?.role === "BRANCH_MANAGER";
+  
+  const getDashboardLink = () => {
+    if (isAdmin) return "/admin";
+    if (isBranchManager) return "/branch-dashboard";
+    return "/dashboard";
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/5 bg-[#0a0d1a]/90 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex items-center gap-2.5 group">
+        <Link href={getDashboardLink()} className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-shadow">
             <Package className="w-4 h-4 text-white" />
           </div>
@@ -43,10 +50,14 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-1">
           {isAdmin ? (
             <>
-              <NavLink href="/admin" icon={<LayoutDashboard className="w-4 h-4" />} label="Dashboard" />
+              <NavLink href="/admin" icon={<LayoutDashboard className="w-4 h-4" />} label="Admin Dashboard" />
               <NavLink href="/admin/orders" icon={<ShoppingCart className="w-4 h-4" />} label="Orders" />
               <NavLink href="/admin/branches" icon={<Store className="w-4 h-4" />} label="Branches" />
               <NavLink href="/admin/products" icon={<Box className="w-4 h-4" />} label="Products" />
+            </>
+          ) : isBranchManager ? (
+            <>
+              <NavLink href="/branch-dashboard" icon={<Store className="w-4 h-4" />} label="Branch Operations" />
             </>
           ) : (
             <>

@@ -8,9 +8,10 @@ import LoadingSpinner from "./LoadingSpinner";
 interface Props {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  requireStaff?: boolean;
 }
 
-export default function ProtectedRoute({ children, requireAdmin = false }: Props) {
+export default function ProtectedRoute({ children, requireAdmin = false, requireStaff = false }: Props) {
   const { user, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
@@ -22,7 +23,10 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Props
     if (requireAdmin && user.role !== "ADMIN") {
       router.replace("/dashboard");
     }
-  }, [isAuthenticated, user, requireAdmin, router]);
+    if (requireStaff && user.role !== "ADMIN" && user.role !== "BRANCH_MANAGER") {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, user, requireAdmin, requireStaff, router]);
 
   if (!isAuthenticated || !user) {
     return (
@@ -33,6 +37,10 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Props
   }
 
   if (requireAdmin && user.role !== "ADMIN") {
+    return null;
+  }
+
+  if (requireStaff && user.role !== "ADMIN" && user.role !== "BRANCH_MANAGER") {
     return null;
   }
 

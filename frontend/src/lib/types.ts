@@ -2,7 +2,8 @@ export interface User {
   user_id: number;
   email: string;
   full_name: string;
-  role: "CUSTOMER" | "ADMIN";
+  role: "CUSTOMER" | "ADMIN" | "BRANCH_MANAGER";
+  branch_id?: number;
   access_token: string;
   mobile_number?: string;
   address_line_1?: string;
@@ -55,6 +56,7 @@ export interface OrderItem {
 export type OrderStatus =
   | "PENDING"
   | "ALLOCATED"
+  | "PROCESSING"
   | "UNALLOCATED"
   | "CANCELLED"
   | "DELIVERED";
@@ -67,6 +69,10 @@ export interface Order {
   allocated_branch_id: number | null;
   allocated_branch_name: string | null;
   customer_note: string | null;
+  // Canonical AI classification fields (populated on every classified note)
+  ai_category: string | null;
+  ai_confidence: number | null;
+  // Legacy fields
   note_category: string | null;
   note_confidence: number | null;
   note_needs_review: boolean | null;
