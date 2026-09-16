@@ -77,8 +77,9 @@ export default function BranchDashboardPage() {
     try {
       await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
       await fetchData();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      alert(`Failed to update status: ${err.response?.data?.detail || err.message}`);
     } finally {
       setUpdatingId(null);
     }
