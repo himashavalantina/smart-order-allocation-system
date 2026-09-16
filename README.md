@@ -92,7 +92,8 @@ Security was prioritized across the stack:
 2. **Authentication:** Implemented using JSON Web Tokens (JWT) with expiration times. The frontend stores tokens securely and attaches them as Bearer tokens to protected requests.
 3. **Role-Based Access Control (RBAC):** Users are assigned roles (`ADMIN`, `BRANCH_MANAGER`, `CUSTOMER`). API routes use dependency injection (`require_admin`, `require_branch_manager`) to explicitly block unauthorized horizontal/vertical access. A customer modifying local storage data cannot trick the backend into granting admin access.
 4. **Input Validation:** FastAPI and Pydantic enforce strict payload schemas, rejecting invalid or malicious payloads before they hit business logic.
-5. **Secrets:** Private keys for JWT generation are handled securely via `.env` files.
+5. **Rate Limiting:** Sensitive endpoints are protected against brute-force attacks using `slowapi` (e.g., Logins are strictly limited to 5 attempts per minute per IP).
+6. **Secrets:** Private keys for JWT generation are handled securely via `.env` files.
 
 ---
 
