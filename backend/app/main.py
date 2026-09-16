@@ -1,19 +1,19 @@
 import logging
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 
 from app.config import settings
 from app.database import engine, Base
 from app.middleware.rate_limit import limiter
+from app.utils.location_service import load_postal_codes
 
 # Import all models so SQLAlchemy registers them before create_all()
 import app.models  # noqa: F401
 
-from app.routers import auth, orders, branches, products, admin, classify
+from app.routers import auth, orders, branches, products, admin, classify, locations
 
 logging.basicConfig(
     level=logging.INFO,
@@ -35,6 +35,12 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+
+@app.on_event("startup")
+def startup_event() -> None:
+    """Load the Sri Lankan postal code CSV into memory once on startup."""
+    load_postal_codes()
+
 # ── Rate Limiter ──────────────────────────────────────────────────────────────
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -55,6 +61,7 @@ app.include_router(branches.router)
 app.include_router(products.router)
 app.include_router(admin.router)
 app.include_router(classify.router)
+app.include_router(locations.router)
 
 
 @app.get("/health", tags=["Health"])

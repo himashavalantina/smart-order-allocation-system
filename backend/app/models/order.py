@@ -27,10 +27,15 @@ class Order(Base):
 
     total_amount = Column(Float, nullable=False, default=0.0)
 
-    # Delivery address (overrides customer profile location)
+    # Sri Lankan Delivery Address Data
+    delivery_mobile = Column(String(20), nullable=True)
+    delivery_address_line_1 = Column(String(255), nullable=True)
+    delivery_address_line_2 = Column(String(255), nullable=True)
+    delivery_postal_code = Column(String(10), nullable=True)
+    delivery_city = Column(String(100), nullable=True)
+    delivery_district = Column(String(100), nullable=True)
     delivery_lat = Column(Float, nullable=True)
     delivery_lng = Column(Float, nullable=True)
-    delivery_city = Column(String(100), nullable=True)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

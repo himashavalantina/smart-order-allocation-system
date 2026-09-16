@@ -58,19 +58,35 @@ def register_user(db: Session, data: UserRegisterRequest) -> User:
             detail="An account with this email already exists",
         )
 
+    # Auto-lookup city, district, lat, lng from postal code using real CSV data
+    from app.utils.location_service import lookup_postal_code_csv
+    loc = lookup_postal_code_csv(data.postal_code)
+
+    city = data.location_city or loc["city"]
+    district = data.location_district or loc["district"]
+    lat = data.location_lat if data.location_lat is not None else loc["lat"]
+    lng = data.location_lng if data.location_lng is not None else loc["lng"]
+
     user = User(
         email=data.email,
         hashed_password=hash_password(data.password),
         full_name=data.full_name,
         role="CUSTOMER",
-        location_lat=data.location_lat,
-        location_lng=data.location_lng,
-        location_city=data.location_city,
+        mobile_number=data.mobile_number,
+        address_line_1=data.address_line_1,
+        address_line_2=data.address_line_2,
+        postal_code=data.postal_code,
+        location_city=city,
+        location_district=district,
+        location_lat=lat,
+        location_lng=lng,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
     return user
+
+
 
 
 def authenticate_user(db: Session, email: str, password: str) -> User:

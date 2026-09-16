@@ -58,7 +58,12 @@ def _build_order_response(db: Session, order: Order) -> OrderResponse:
         note_confidence=order.note_confidence,
         note_needs_review=order.note_needs_review,
         total_amount=order.total_amount,
+        delivery_mobile=order.delivery_mobile,
+        delivery_address_line_1=order.delivery_address_line_1,
+        delivery_address_line_2=order.delivery_address_line_2,
+        delivery_postal_code=order.delivery_postal_code,
         delivery_city=order.delivery_city,
+        delivery_district=order.delivery_district,
         created_at=order.created_at,
         updated_at=order.updated_at,
         items=items_resp,
@@ -86,20 +91,42 @@ def create_order(
         total_amount += product.price * req_item.quantity
         validated_items.append((product, req_item.quantity))
 
-    # Resolve delivery location
-    delivery_lat = data.delivery_lat or current_user.location_lat
-    delivery_lng = data.delivery_lng or current_user.location_lng
-    delivery_city = data.delivery_city or current_user.location_city
+    # Resolve delivery address & centroid location
+    postal_code = data.delivery_postal_code or current_user.postal_code
+    from app.utils.location_data import lookup_postal_code
+    loc = lookup_postal_code(postal_code)
+
+    if data.delivery_postal_code:
+        delivery_city = data.delivery_city or loc["city"]
+        delivery_district = data.delivery_district or loc["district"]
+        delivery_lat = data.delivery_lat if data.delivery_lat is not None else loc["lat"]
+        delivery_lng = data.delivery_lng if data.delivery_lng is not None else loc["lng"]
+    else:
+        delivery_city = data.delivery_city or current_user.location_city or loc["city"]
+        delivery_district = data.delivery_district or current_user.location_district or loc["district"]
+        delivery_lat = data.delivery_lat if data.delivery_lat is not None else current_user.location_lat
+        delivery_lng = data.delivery_lng if data.delivery_lng is not None else current_user.location_lng
+        if delivery_lat is None or delivery_lng is None:
+            delivery_lat, delivery_lng = loc["lat"], loc["lng"]
+
 
     order = Order(
         customer_id=current_user.id,
         status="PENDING",
         customer_note=data.customer_note,
         total_amount=round(total_amount, 2),
+        delivery_mobile=data.delivery_mobile or current_user.mobile_number,
+        delivery_address_line_1=data.delivery_address_line_1 or current_user.address_line_1,
+        delivery_address_line_2=data.delivery_address_line_2 or current_user.address_line_2,
+        delivery_postal_code=postal_code,
+        delivery_city=delivery_city,
+        delivery_district=delivery_district,
         delivery_lat=delivery_lat,
         delivery_lng=delivery_lng,
-        delivery_city=delivery_city,
     )
+
+
+
 
     # Classify note if present (gracefully skip if model not trained)
     if data.customer_note:

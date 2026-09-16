@@ -11,9 +11,14 @@ class OrderItemRequest(BaseModel):
 class OrderCreateRequest(BaseModel):
     items: List[OrderItemRequest] = Field(min_length=1)
     customer_note: Optional[str] = Field(None, max_length=2000)
+    delivery_mobile: Optional[str] = Field(None, max_length=20)
+    delivery_address_line_1: Optional[str] = Field(None, max_length=255)
+    delivery_address_line_2: Optional[str] = Field(None, max_length=255)
+    delivery_postal_code: Optional[str] = Field(None, max_length=10)
+    delivery_city: Optional[str] = Field(None, max_length=100)
+    delivery_district: Optional[str] = Field(None, max_length=100)
     delivery_lat: Optional[float] = Field(None, ge=-90, le=90)
     delivery_lng: Optional[float] = Field(None, ge=-180, le=180)
-    delivery_city: Optional[str] = Field(None, max_length=100)
 
     @model_validator(mode="after")
     def check_no_duplicate_products(self) -> "OrderCreateRequest":
@@ -52,7 +57,12 @@ class OrderResponse(BaseModel):
     note_confidence: Optional[float] = None
     note_needs_review: Optional[bool] = None
     total_amount: float
+    delivery_mobile: Optional[str] = None
+    delivery_address_line_1: Optional[str] = None
+    delivery_address_line_2: Optional[str] = None
+    delivery_postal_code: Optional[str] = None
     delivery_city: Optional[str] = None
+    delivery_district: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     items: List[OrderItemResponse] = []

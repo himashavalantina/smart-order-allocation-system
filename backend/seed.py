@@ -1,7 +1,7 @@
 """
 Seed Script - Demo Data
 =======================
-Populates the database with branches, products, inventory, and test users.
+Populates the database with branches, products, inventory, and test users with Sri Lankan postal code centroids and address data.
 
 Usage (from the backend directory):
     python seed.py
@@ -47,9 +47,14 @@ try:
         hashed_password=hash_password("Admin@123"),
         full_name="System Administrator",
         role="ADMIN",
-        location_lat=6.9271,
-        location_lng=79.8612,
-        location_city="Colombo",
+        mobile_number="0770000000",
+        address_line_1="HQ Administrative Building",
+        address_line_2="Suite 100",
+        postal_code="00300",
+        location_city="Kollupitiya (Colombo 03)",
+        location_district="Colombo",
+        location_lat=6.9056,
+        location_lng=79.8523,
     )
     db.add(admin)
 
@@ -59,36 +64,56 @@ try:
             hashed_password=hash_password("Customer@123"),
             full_name="Kavya Perera",
             role="CUSTOMER",
-            location_lat=6.9271,
-            location_lng=79.8612,
-            location_city="Colombo",
+            mobile_number="0771234567",
+            address_line_1="15 Galle Road",
+            address_line_2="Apt 4B",
+            postal_code="00300",
+            location_city="Kollupitiya (Colombo 03)",
+            location_district="Colombo",
+            location_lat=6.9056,
+            location_lng=79.8523,
         ),
         User(
             email="rahul@example.com",
             hashed_password=hash_password("Customer@123"),
             full_name="Rahul Fernando",
             role="CUSTOMER",
+            mobile_number="0719876543",
+            address_line_1="42 Peradeniya Road",
+            address_line_2="",
+            postal_code="20000",
+            location_city="Kandy Central",
+            location_district="Kandy",
             location_lat=7.2906,
             location_lng=80.6337,
-            location_city="Kandy",
         ),
         User(
             email="nisha@example.com",
             hashed_password=hash_password("Customer@123"),
             full_name="Nisha Rajapaksa",
             role="CUSTOMER",
+            mobile_number="0765554321",
+            address_line_1="88 Rampart Street",
+            address_line_2="Fort View",
+            postal_code="80000",
+            location_city="Galle Fort",
+            location_district="Galle",
             location_lat=6.0535,
             location_lng=80.2210,
-            location_city="Galle",
         ),
         User(
             email="ashan@example.com",
             hashed_password=hash_password("Customer@123"),
             full_name="Ashan Wijesinghe",
             role="CUSTOMER",
+            mobile_number="0751122334",
+            address_line_1="12 Beach Road",
+            address_line_2="",
+            postal_code="11500",
+            location_city="Negombo",
+            location_district="Gampaha",
             location_lat=7.2090,
             location_lng=79.8380,
-            location_city="Negombo",
         ),
     ]
     for c in customers:
@@ -101,8 +126,8 @@ try:
         Branch(
             name="Colombo Central Branch",
             address="123 Galle Road, Colombo 03",
-            location_lat=6.9271,
-            location_lng=79.8612,
+            location_lat=6.9056,
+            location_lng=79.8523,
             city="Colombo",
         ),
         Branch(
@@ -172,7 +197,7 @@ try:
         (1, 4, 30), (1, 5, 25), (1, 6, 100), (1, 7, 80), (1, 8, 18),
         # Galle -- lower stock, no laptop or iPhone
         (2, 0, 10), (2, 2, 20),
-        (2, 4, 40), (2, 5, 35), (2, 6, 150), (2, 7, 100), (2, 9, 12),
+        (2, 4, 40), (2, 5, 35), (2, 6, 150), (2, 7, 100), (2, 8, 15), (2, 9, 12),
         # Negombo -- good food stock, limited electronics
         (3, 1, 25), (3, 3, 8),
         (3, 4, 50), (3, 6, 80), (3, 7, 60), (3, 8, 22), (3, 9, 20),
@@ -190,15 +215,15 @@ try:
     db.commit()
 
     print("\n[OK] Seed completed successfully!\n")
-    print("=" * 48)
-    print("  Demo Credentials")
-    print("=" * 48)
+    print("=" * 52)
+    print("  Demo Credentials (Sri Lankan Addresses)")
+    print("=" * 52)
     print("  Admin:    admin@orderalloc.lk   / Admin@123")
-    print("  Customer: kavya@example.com     / Customer@123 (Colombo)")
-    print("  Customer: rahul@example.com     / Customer@123 (Kandy)")
-    print("  Customer: nisha@example.com     / Customer@123 (Galle)")
-    print("  Customer: ashan@example.com     / Customer@123 (Negombo)")
-    print("=" * 48)
+    print("  Customer: kavya@example.com     / Customer@123 (Postal Code: 00300 - Colombo 03)")
+    print("  Customer: rahul@example.com     / Customer@123 (Postal Code: 20000 - Kandy)")
+    print("  Customer: nisha@example.com     / Customer@123 (Postal Code: 80000 - Galle)")
+    print("  Customer: ashan@example.com     / Customer@123 (Postal Code: 11500 - Negombo)")
+    print("=" * 52)
 
 except Exception as exc:
     db.rollback()
