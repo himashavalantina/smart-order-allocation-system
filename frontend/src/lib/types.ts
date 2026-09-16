@@ -4,6 +4,12 @@ export interface User {
   full_name: string;
   role: "CUSTOMER" | "ADMIN";
   access_token: string;
+  mobile_number?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  postal_code?: string;
+  location_city?: string;
+  location_district?: string;
 }
 
 export interface Product {
@@ -65,7 +71,12 @@ export interface Order {
   note_confidence: number | null;
   note_needs_review: boolean | null;
   total_amount: number;
-  delivery_city: string | null;
+  delivery_mobile?: string | null;
+  delivery_address_line_1?: string | null;
+  delivery_address_line_2?: string | null;
+  delivery_postal_code?: string | null;
+  delivery_city?: string | null;
+  delivery_district?: string | null;
   created_at: string;
   updated_at: string;
   items: OrderItem[];

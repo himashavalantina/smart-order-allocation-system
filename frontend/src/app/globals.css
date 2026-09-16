@@ -48,6 +48,15 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.input-base option {
+  background-color: var(--bg-surface-2);
+  /* A solid dark color so text is visible */
+  color: #f1f5f9;
+  /* Light text color */
+  padding: 8px;
+  /* Adds a bit of breathing room */
+}
+
 .input-base::placeholder {
   color: #475569;
 }
@@ -91,13 +100,16 @@ body {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(99, 102, 241, 0.3);
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 102, 241, 0.5);
 }
@@ -125,8 +137,15 @@ body {
 
 /* Animate in */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {

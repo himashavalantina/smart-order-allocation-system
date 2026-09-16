@@ -13,9 +13,14 @@ interface AuthState {
     email: string;
     password: string;
     full_name: string;
+    mobile_number: string;
+    address_line_1: string;
+    address_line_2?: string;
+    postal_code: string;
     location_lat?: number;
     location_lng?: number;
     location_city?: string;
+    location_district?: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;

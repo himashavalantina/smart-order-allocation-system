@@ -7,9 +7,11 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import ClassifyNote from "@/components/ClassifyNote";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import StatusBadge from "@/components/StatusBadge";
-import { Product, Order, CITIES } from "@/lib/types";
+import { Product, Order } from "@/lib/types";
+import { getPostalCodeLocation } from "@/lib/locationData";
 import { formatCurrency } from "@/lib/utils";
 import api from "@/lib/api";
+import PostalCodeAutocomplete, { PostalCodeResult } from "@/components/PostalCodeAutocomplete";
 import {
   ShoppingCart,
   Plus,
@@ -22,8 +24,11 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
+  Home,
+  Phone,
 } from "lucide-react";
 import Link from "next/link";
+import { useAuthStore } from "@/store/authStore";
 
 interface CartItem {
   product: Product;
@@ -31,23 +36,42 @@ interface CartItem {
 }
 
 export default function NewOrderPage() {
+  const { user } = useAuthStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [note, setNote] = useState("");
-  const [city, setCity] = useState("");
+  const [locationMode, setLocationMode] = useState<"profile" | "custom">("profile");
+
+  // Custom address state
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  // Resolved postal code result for custom mode (includes lat/lng)
+  const [customLocation, setCustomLocation] = useState<PostalCodeResult | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<Order | null>(null);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const router = useRouter();
+
+  // Profile location – resolved from the saved postal code
+  const profileLocation = getPostalCodeLocation(user?.postal_code || "00300");
 
   useEffect(() => {
     api.get<Product[]>("/products").then(({ data }) => {
       setProducts(data);
     }).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setMobileNumber(user.mobile_number || "");
+      setAddressLine1(user.address_line_1 || "");
+      setAddressLine2(user.address_line_2 || "");
+    }
+  }, [user]);
 
   const categories = ["All", ...Array.from(new Set(products.map((p) => p.category)))];
 
@@ -81,18 +105,45 @@ export default function NewOrderPage() {
 
   const handleSubmit = async () => {
     if (cart.length === 0) return;
+
+    // Validate custom location is selected when mode is custom
+    if (locationMode === "custom" && !customLocation) {
+      setError("Please select a valid postal code for your custom delivery address.");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
-    const coords = city ? CITIES[city] : null;
+    // Resolve delivery coordinates
+    const deliveryLat = locationMode === "profile"
+      ? profileLocation.lat
+      : customLocation!.lat;
+    const deliveryLng = locationMode === "profile"
+      ? profileLocation.lng
+      : customLocation!.lng;
+    const deliveryCity = locationMode === "profile"
+      ? profileLocation.city
+      : customLocation!.city;
+    const deliveryDistrict = locationMode === "profile"
+      ? profileLocation.district
+      : customLocation!.district;
+    const deliveryPostalCode = locationMode === "profile"
+      ? user?.postal_code
+      : customLocation!.postal_code;
 
     try {
       const { data } = await api.post<Order>("/orders", {
         items: cart.map((c) => ({ product_id: c.product.id, quantity: c.quantity })),
         customer_note: note || undefined,
-        delivery_city: city || undefined,
-        delivery_lat: coords?.lat,
-        delivery_lng: coords?.lng,
+        delivery_mobile: mobileNumber || undefined,
+        delivery_address_line_1: addressLine1 || undefined,
+        delivery_address_line_2: addressLine2 || undefined,
+        delivery_postal_code: deliveryPostalCode,
+        delivery_city: deliveryCity,
+        delivery_district: deliveryDistrict,
+        delivery_lat: deliveryLat,
+        delivery_lng: deliveryLng,
       });
       setResult(data);
     } catch (err: any) {
@@ -115,12 +166,12 @@ export default function NewOrderPage() {
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-8 h-8 text-emerald-400" />
                   </div>
-                  <h2 className="text-xl font-bold text-white mb-1">Order Placed!</h2>
+                  <h2 className="text-xl font-bold text-white mb-1">Order Placed & Allocated!</h2>
                   <p className="text-slate-400 text-sm mb-4">
-                    Your order has been successfully allocated.
+                    Your order was dynamically assigned to the best eligible branch.
                   </p>
-                  <div className="glass-card p-4 text-left mb-6 space-y-2">
-                    <p className="text-slate-400 text-xs uppercase tracking-wider font-medium mb-3">Order Details</p>
+                  <div className="glass-card p-4 text-left mb-6 space-y-2.5">
+                    <p className="text-slate-400 text-xs uppercase tracking-wider font-medium mb-2">Order Summary</p>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-400">Order ID</span>
                       <span className="text-white font-mono">#{result.id}</span>
@@ -130,11 +181,15 @@ export default function NewOrderPage() {
                       <StatusBadge status={result.status} size="sm" />
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Allocated Branch</span>
+                      <span className="text-slate-400">Allocated Outlet</span>
                       <span className="text-emerald-400 font-medium">{result.allocated_branch_name}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Total</span>
+                      <span className="text-slate-400">Delivery City / District</span>
+                      <span className="text-indigo-300 font-medium">{result.delivery_city} ({result.delivery_district})</span>
+                    </div>
+                    <div className="flex justify-between text-sm border-t border-white/5 pt-2">
+                      <span className="text-slate-400">Total Amount</span>
                       <span className="text-white font-bold">{formatCurrency(result.total_amount)}</span>
                     </div>
                   </div>
@@ -146,14 +201,14 @@ export default function NewOrderPage() {
                   </div>
                   <h2 className="text-xl font-bold text-white mb-1">Order Unallocated</h2>
                   <p className="text-slate-400 text-sm">
-                    No branch currently has sufficient stock for all items in your order. Please try again later or adjust your order.
+                    No branch currently has 100% stock availability for all items in your order. Please try again later or adjust your items.
                   </p>
                 </>
               )}
               <div className="flex gap-3 justify-center mt-6">
-                <Link href="/orders" className="btn-primary">View Orders</Link>
+                <Link href="/orders" className="btn-primary">View My Orders</Link>
                 <button onClick={() => setResult(null)} className="px-4 py-2 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 text-sm transition-all">
-                  Place Another
+                  Place Another Order
                 </button>
               </div>
             </div>
@@ -173,8 +228,8 @@ export default function NewOrderPage() {
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-white">Place Order</h1>
-              <p className="text-slate-400 text-sm">Select products and we&apos;ll find the best branch</p>
+              <h1 className="text-2xl font-bold text-white">Place New Order</h1>
+              <p className="text-slate-400 text-sm">Centroid allocation based on Sri Lankan postal code</p>
             </div>
           </div>
 
@@ -299,22 +354,102 @@ export default function NewOrderPage() {
                 )}
               </div>
 
-              {/* Delivery City */}
-              <div className="glass-card p-4 space-y-2">
+              {/* Delivery Address & Postal Centroid Selector */}
+              <div className="glass-card p-4 space-y-3">
                 <label className="text-slate-400 text-xs font-medium flex items-center gap-1.5">
-                  <MapPin className="w-3 h-3 text-indigo-400" />
-                  Delivery City
+                  <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                  Delivery Location
                 </label>
-                <select
-                  className="input-base text-sm"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                >
-                  <option value="">Use my profile city</option>
-                  {Object.keys(CITIES).map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setLocationMode("profile")}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                      locationMode === "profile"
+                        ? "bg-indigo-500/15 border-indigo-500/40 text-white font-medium"
+                        : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    <p className="font-semibold text-white">Profile Address</p>
+                    <p className="text-[11px] text-indigo-300 mt-0.5 font-medium truncate">
+                      📍 {user?.location_city || "Saved Profile"}
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setLocationMode("custom")}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                      locationMode === "custom"
+                        ? "bg-indigo-500/15 border-indigo-500/40 text-white font-medium"
+                        : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    <p className="font-semibold text-white">Custom Location</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Different address</p>
+                  </button>
+                </div>
+
+                {locationMode === "custom" && (
+                  <div className="pt-2 space-y-3 animate-fade-in border-t border-white/5">
+                    <div className="space-y-1">
+                      <label className="text-slate-400 text-[11px]">Mobile Number</label>
+                      <input
+                        type="text"
+                        className="input-base text-xs font-mono"
+                        placeholder="0771234567"
+                        value={mobileNumber}
+                        onChange={(e) => setMobileNumber(e.target.value)}
+                        maxLength={10}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-slate-400 text-[11px]">Address Line 1</label>
+                      <input
+                        type="text"
+                        className="input-base text-xs"
+                        placeholder="Street address"
+                        value={addressLine1}
+                        onChange={(e) => setAddressLine1(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-slate-400 text-[11px]">Postal Code</label>
+                      <PostalCodeAutocomplete
+                        value={customLocation?.postal_code || ""}
+                        onChange={(result) => setCustomLocation(result)}
+                        placeholder="Type postal code or area…"
+                      />
+                    </div>
+
+                    {/* Auto-filled read-only fields */}
+                    {customLocation && (
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <div className="space-y-1">
+                        <label className="text-slate-500 text-[10px]">Auto-Filled City</label>
+                        <input
+                          type="text"
+                          readOnly
+                          className="input-base bg-white/5 text-slate-300 border-white/5 cursor-not-allowed text-xs font-semibold"
+                          value={customLocation.city}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-slate-500 text-[10px]">Auto-Filled District</label>
+                        <input
+                          type="text"
+                          readOnly
+                          className="input-base bg-white/5 text-slate-300 border-white/5 cursor-not-allowed text-xs font-semibold"
+                          value={customLocation.district}
+                        />
+                      </div>
+                    </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Customer Note + AI */}
