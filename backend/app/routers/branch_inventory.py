@@ -45,13 +45,20 @@ def add_product_to_inventory(
     # Create the global product first
     product = Product(
         name=data.product_name,
+        description=data.description,
         price=data.price,
-        category="General",  # Default category
+        category=data.category or "General",
+        image_url=data.image_url,
         is_active=True,
     )
     db.add(product)
     db.commit()
     db.refresh(product)
+
+    # Auto-generate SKU based on category and ID (e.g. ELE-005)
+    category_prefix = (product.category or "GEN")[:3].upper()
+    product.sku = f"{category_prefix}-{product.id:03d}"
+    db.commit()
 
     # Add it to the manager's branch inventory
     inv = Inventory(

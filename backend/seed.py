@@ -36,8 +36,8 @@ try:
     db.query(Order).delete()
     db.query(Inventory).delete()
     db.query(Product).delete()
-    db.query(Branch).delete()
     db.query(User).delete()
+    db.query(Branch).delete()
     db.commit()
 
     # -- Users ----------------------------------------------------------------
@@ -194,16 +194,78 @@ try:
     # -- Products -------------------------------------------------------------
     print("[INFO] Creating products...")
     products = [
-        Product(name="Samsung Galaxy S24", description="Latest Samsung flagship smartphone with AI features", price=189990.0, category="Electronics", sku="ELEC-001"),
-        Product(name="Apple iPhone 15", description="Apple's latest iPhone with A16 chip", price=219990.0, category="Electronics", sku="ELEC-002"),
-        Product(name="Sony WH-1000XM5 Headphones", description="Industry-leading noise-cancelling headphones", price=49990.0, category="Electronics", sku="ELEC-003"),
-        Product(name="Dell XPS 15 Laptop", description="High-performance 15-inch ultrabook for professionals", price=349990.0, category="Electronics", sku="ELEC-004"),
-        Product(name="Nike Air Max 270", description="Iconic Nike running and lifestyle shoes", price=18990.0, category="Footwear", sku="FOOT-001"),
-        Product(name="Adidas Ultraboost 22", description="High-performance running shoes with Boost cushioning", price=22990.0, category="Footwear", sku="FOOT-002"),
-        Product(name="Organic Ceylon Green Tea 100g", description="Premium hand-picked organic Ceylon green tea", price=990.0, category="Food & Beverages", sku="FOOD-001"),
-        Product(name="Nescafe Gold Blend 200g", description="Rich premium instant coffee blend", price=1490.0, category="Food & Beverages", sku="FOOD-002"),
-        Product(name="Casio G-Shock GA-2100", description="Carbon Core Guard military-grade sports watch", price=29990.0, category="Accessories", sku="ACC-001"),
-        Product(name="Ray-Ban Aviator Classic", description="Timeless gold-frame aviator sunglasses", price=24990.0, category="Accessories", sku="ACC-002"),
+        Product(
+            name="Wireless Mouse", 
+            description="Ergonomic optical wireless mouse", 
+            price=2500.0, 
+            category="Electronics", 
+            sku="ELEC-001",
+            image_url="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80"
+        ),
+        Product(
+            name="Mechanical Keyboard", 
+            description="RGB mechanical gaming keyboard", 
+            price=12500.0, 
+            category="Electronics", 
+            sku="ELEC-002",
+            image_url="https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&q=80"
+        ),
+        Product(
+            name="Apple iPhone 15", 
+            description="Apple's latest iPhone with A16 Bionic chip and dynamic island display.", 
+            price=319990.0, 
+            category="Electronics", 
+            sku="ELEC-003",
+            image_url="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&q=80"
+        ),
+        Product(
+            name="The Pragmatic Programmer", 
+            description="A must-read book for software engineering interns and developers looking to master their craft.", 
+            price=9500.0, 
+            category="Books", 
+            sku="BOK-001",
+            image_url="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=80"
+        ),
+        Product(
+            name="Nescafe Gold Blend 200g", 
+            description="High premium instant coffee blend with a rich and smooth taste.", 
+            price=1490.0, 
+            category="Groceries", 
+            sku="GRO-001",
+            image_url="https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=400&q=80"
+        ),
+        Product(
+            name="Men's Cotton Crewneck T-Shirt", 
+            description="Everyday essential black crewneck t-shirt made from 100% breathable organic cotton.", 
+            price=2990.0, 
+            category="Clothing", 
+            sku="CLO-001",
+            image_url="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80"
+        ),
+        Product(
+            name="Sony WH-1000XM5 Headphones", 
+            description="Industry-leading noise-canceling over-ear wireless headphones.", 
+            price=89900.0, 
+            category="Electronics", 
+            sku="ELEC-004",
+            image_url="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&q=80"
+        ),
+        Product(
+            name="Organic Ceylon Green Tea 100g", 
+            description="Premium hand-picked organic Ceylon green tea leaves directly from the hills of Sri Lanka.", 
+            price=990.0, 
+            category="Groceries", 
+            sku="GRO-002",
+            image_url="https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=400&q=80"
+        ),
+        Product(
+            name="Clean Code by Robert C. Martin", 
+            description="A Handbook of Agile Software Craftsmanship. Perfect for your technical assessment preparation.", 
+            price=8500.0, 
+            category="Books", 
+            sku="BOK-002",
+            image_url="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80"
+        )
     ]
     for p in products:
         db.add(p)
@@ -231,6 +293,10 @@ try:
         (4, 0, 5), (4, 6, 60), (4, 7, 40), (4, 4, 15),
     ]
     for b_idx, p_idx, qty in inv_data:
+        # Safeguard: skip if a product was deleted
+        if p_idx >= len(products):
+            continue
+            
         db.add(
             Inventory(
                 branch_id=branches[b_idx].id,

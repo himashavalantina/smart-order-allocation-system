@@ -1,6 +1,7 @@
 import logging
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
@@ -14,7 +15,7 @@ from app.utils.location_service import load_postal_codes
 import app.models  # noqa: F401
 
 from app.routers import auth, orders, branches, products, admin, classify, locations
-from app.routers import support, branch_inventory
+from app.routers import support, branch_inventory, upload
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,6 +43,9 @@ def startup_event() -> None:
     """Load the Sri Lankan postal code CSV into memory once on startup."""
     load_postal_codes()
 
+# ── Static Files ─────────────────────────────────────────────────────────────
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 # ── Rate Limiter ──────────────────────────────────────────────────────────────
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -65,6 +69,7 @@ app.include_router(classify.router)
 app.include_router(locations.router)
 app.include_router(support.router)
 app.include_router(branch_inventory.router)
+app.include_router(upload.router)
 
 
 @app.get("/health", tags=["Health"])
