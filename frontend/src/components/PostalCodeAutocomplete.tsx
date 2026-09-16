@@ -109,7 +109,7 @@ export default function PostalCodeAutocomplete({
       {/* Input row */}
       <div className="relative flex items-center">
         {loading ? (
-          <Loader2 className="absolute left-3 w-3.5 h-3.5 text-indigo-400 animate-spin pointer-events-none" />
+          <Loader2 className="absolute left-3 w-3.5 h-3.5 text-emerald-400 animate-spin pointer-events-none" />
         ) : (
           <Search className="absolute left-3 w-3.5 h-3.5 text-slate-500 pointer-events-none" />
         )}
@@ -179,7 +179,7 @@ export default function PostalCodeAutocomplete({
                 }}
                 className="w-full flex items-start gap-3 px-3 py-2.5 text-left hover:bg-white/5 transition-colors group"
               >
-                <MapPin className="w-3.5 h-3.5 mt-0.5 text-indigo-400 shrink-0 group-hover:text-indigo-300" />
+                <MapPin className="w-3.5 h-3.5 mt-0.5 text-emerald-400 shrink-0 group-hover:text-emerald-300" />
                 <div className="min-w-0">
                   <span className="font-mono text-white text-xs font-semibold">
                     {r.postal_code}

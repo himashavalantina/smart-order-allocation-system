@@ -42,14 +42,14 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       {/* Background orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-violet-500/8 rounded-full blur-3xl" />
       </div>
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-xl shadow-indigo-500/30 mb-4">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-violet-600 shadow-xl shadow-emerald-500/30 mb-4">
             <Package className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Welcome back</h1>
@@ -116,7 +116,7 @@ export default function LoginPage() {
           <div className="mt-5 pt-4 border-t border-white/5 text-center">
             <p className="text-slate-500 text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+              <Link href="/register" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
                 Create one
               </Link>
             </p>
@@ -138,7 +138,7 @@ export default function LoginPage() {
                 onClick={() => { setEmail(cred.email); setPassword(cred.pass); }}
                 className="w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
               >
-                <span className="text-xs text-indigo-400 font-medium">{cred.label}:</span>{" "}
+                <span className="text-xs text-emerald-400 font-medium">{cred.label}:</span>{" "}
                 <span className="text-xs text-slate-300">{cred.email}</span>
               </button>
             ))}

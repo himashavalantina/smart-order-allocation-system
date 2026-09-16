@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
 
           {/* Primary Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <StatsCard label="Total Orders" value={summary.total_orders} icon={ShoppingCart} iconColor="text-indigo-400" />
+            <StatsCard label="Total Orders" value={summary.total_orders} icon={ShoppingCart} iconColor="text-emerald-400" />
             <StatsCard label="Total Revenue" value={formatCurrency(summary.total_revenue)} icon={DollarSign} iconColor="text-emerald-400" />
             <StatsCard label="Total Customers" value={summary.total_customers} icon={Users} iconColor="text-cyan-400" />
             {!isBranchManager && (
@@ -106,11 +106,10 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Secondary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <StatsCard label="Allocated" value={summary.allocated_orders} icon={CheckCircle} iconColor="text-emerald-400" />
-            <StatsCard label="Delivered" value={summary.delivered_orders} icon={Package} iconColor="text-indigo-400" />
+            <StatsCard label="Delivered" value={summary.delivered_orders} icon={Package} iconColor="text-emerald-400" />
             <StatsCard label="Unallocated" value={summary.unallocated_orders} icon={XCircle} iconColor="text-red-400" description="Needs attention" />
-            <StatsCard label="Pending" value={summary.pending_orders} icon={Clock} iconColor="text-yellow-400" />
           </div>
 
           {/* Charts */}
@@ -118,7 +117,7 @@ export default function AdminDashboardPage() {
             {/* Status Distribution Pie */}
             <div className="glass-card p-5">
               <h2 className="text-white font-semibold text-sm mb-4 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-indigo-400" />
+                <TrendingUp className="w-4 h-4 text-emerald-400" />
                 Order Status Distribution
               </h2>
               <ResponsiveContainer width="100%" height={220}>
@@ -183,7 +182,7 @@ export default function AdminDashboardPage() {
           {/* Recent Orders */}
           <div>
             <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <Package className="w-5 h-5 text-indigo-400" />
+              <Package className="w-5 h-5 text-emerald-400" />
               Recent Orders
             </h2>
             <div className="space-y-3">

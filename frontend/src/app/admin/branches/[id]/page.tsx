@@ -141,7 +141,7 @@ export default function BranchDashboardPage({ params }: { params: Promise<{ id: 
               label="Active Orders"
               value={branch.active_orders_count}
               icon={Activity}
-              iconColor="text-indigo-400"
+              iconColor="text-emerald-400"
             />
             <StatsCard
               label="Total Products"
@@ -210,7 +210,7 @@ export default function BranchDashboardPage({ params }: { params: Promise<{ id: 
               <div className="glass-card flex flex-col h-[500px]">
                 <div className="p-4 border-b border-white/5 shrink-0 flex items-center justify-between">
                   <h2 className="text-white font-semibold text-sm flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-indigo-400" />
+                    <Activity className="w-4 h-4 text-emerald-400" />
                     Recent Allocated Orders
                   </h2>
                 </div>

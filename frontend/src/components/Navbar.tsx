@@ -38,11 +38,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href={getDashboardLink()} className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-shadow">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-violet-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 group-hover:shadow-emerald-500/50 transition-shadow">
             <Package className="w-4 h-4 text-white" />
           </div>
           <span className="font-bold text-white text-sm tracking-wide">
-            Order<span className="text-indigo-400">Alloc</span>
+            Order<span className="text-emerald-400">Alloc</span>
           </span>
         </Link>
 
@@ -71,7 +71,7 @@ export default function Navbar() {
         {/* User Menu */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
               {user?.full_name?.charAt(0).toUpperCase()}
             </div>
             <div className="hidden sm:block">

@@ -67,11 +67,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             {[
-              { label: "Total Spent", value: formatCurrency(totalSpent), icon: ShoppingCart, color: "text-indigo-400" },
+              { label: "Total Spent", value: formatCurrency(totalSpent), icon: ShoppingCart, color: "text-emerald-400" },
               { label: "Allocated", value: allocated, icon: CheckCircle, color: "text-emerald-400" },
-              { label: "Pending", value: pending, icon: Clock, color: "text-yellow-400" },
               { label: "Cancelled", value: cancelled, icon: XCircle, color: "text-slate-400" },
             ].map((s) => (
               <div key={s.label} className="glass-card p-4 flex items-center gap-3">
@@ -99,10 +98,10 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                <Package className="w-5 h-5 text-indigo-400" />
+                <Package className="w-5 h-5 text-emerald-400" />
                 Recent Orders
               </h2>
-              <Link href="/orders" className="text-indigo-400 hover:text-indigo-300 text-sm transition-colors">
+              <Link href="/orders" className="text-emerald-400 hover:text-emerald-300 text-sm transition-colors">
                 View all →
               </Link>
             </div>

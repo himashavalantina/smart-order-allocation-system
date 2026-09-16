@@ -186,7 +186,7 @@ export default function NewOrderPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-400">Delivery City / District</span>
-                      <span className="text-indigo-300 font-medium">{result.delivery_city} ({result.delivery_district})</span>
+                      <span className="text-emerald-300 font-medium">{result.delivery_city} ({result.delivery_district})</span>
                     </div>
                     <div className="flex justify-between text-sm border-t border-white/5 pt-2">
                       <span className="text-slate-400">Total Amount</span>
@@ -252,7 +252,7 @@ export default function NewOrderPage() {
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
                         selectedCategory === cat
-                          ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300"
+                          ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
                           : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
                       }`}
                     >
@@ -266,42 +266,48 @@ export default function NewOrderPage() {
               {loading ? (
                 <div className="flex justify-center py-16"><LoadingSpinner size="lg" /></div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                   {filtered.map((product) => {
                     const cartItem = cart.find((c) => c.product.id === product.id);
                     return (
-                      <div key={product.id} className="glass-card p-4 hover:border-indigo-500/20 transition-all">
-                        <div className="flex justify-between items-start gap-2">
-                          <div className="flex-1 min-w-0">
-                            <span className="text-[10px] text-indigo-400 font-medium uppercase tracking-wider">{product.category}</span>
-                            <h3 className="text-white text-sm font-semibold leading-tight mt-0.5">{product.name}</h3>
-                            <p className="text-slate-500 text-xs mt-1 line-clamp-1">{product.description}</p>
-                            <p className="text-indigo-300 font-bold text-sm mt-2">{formatCurrency(product.price)}</p>
-                          </div>
-                          <div className="shrink-0">
+                      <div key={product.id} className="bg-slate-800 rounded-xl border border-transparent overflow-hidden group hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-300 flex flex-col">
+                        <div className="relative aspect-[4/3] overflow-hidden bg-slate-900 border-b border-white/5">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={product.image_url || `https://picsum.photos/seed/${product.id}/400/400`} 
+                            alt={product.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-xl"
+                          />
+                        </div>
+                        <div className="p-4 flex flex-col flex-1">
+                          <span className="inline-block w-max px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-2 line-clamp-1">{product.category}</span>
+                          <h3 className="text-white text-sm font-semibold leading-tight line-clamp-2 min-h-[40px]">{product.name}</h3>
+                          <p className="text-emerald-400 font-bold text-xl mt-2 mb-4">{formatCurrency(product.price)}</p>
+                          
+                          <div className="mt-auto">
                             {cartItem ? (
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center justify-between bg-slate-900/50 border border-white/5 rounded-xl p-1 shadow-inner">
                                 <button
                                   onClick={() => updateQty(product.id, -1)}
-                                  className="w-6 h-6 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 transition-all"
+                                  className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 transition-all active:scale-95"
                                 >
-                                  <Minus className="w-3 h-3" />
+                                  <Minus className="w-4 h-4" />
                                 </button>
-                                <span className="text-white font-bold text-sm w-5 text-center">{cartItem.quantity}</span>
+                                <span className="text-white font-bold text-sm text-center px-2">{cartItem.quantity}</span>
                                 <button
                                   onClick={() => updateQty(product.id, 1)}
-                                  className="w-6 h-6 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 flex items-center justify-center text-indigo-400 transition-all"
+                                  className="w-8 h-8 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 flex items-center justify-center text-emerald-400 transition-all active:scale-95"
                                 >
-                                  <Plus className="w-3 h-3" />
+                                  <Plus className="w-4 h-4" />
                                 </button>
                               </div>
                             ) : (
                               <button
                                 onClick={() => addToCart(product)}
-                                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-400 text-xs font-medium transition-all"
+                                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
                               >
-                                <Plus className="w-3 h-3" />
-                                Add
+                                <ShoppingCart className="w-4 h-4" />
+                                Add to Cart
                               </button>
                             )}
                           </div>
@@ -314,11 +320,11 @@ export default function NewOrderPage() {
             </div>
 
             {/* Order Summary Sidebar */}
-            <div className="space-y-4">
+            <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
               {/* Cart */}
               <div className="glass-card p-4">
                 <h2 className="text-white font-semibold text-sm flex items-center gap-2 mb-3">
-                  <ShoppingCart className="w-4 h-4 text-indigo-400" />
+                  <ShoppingCart className="w-4 h-4 text-emerald-400" />
                   Cart ({cart.length} items)
                 </h2>
                 {cart.length === 0 ? (
@@ -334,7 +340,7 @@ export default function NewOrderPage() {
                           </p>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
-                          <span className="text-indigo-300 text-xs font-bold">
+                          <span className="text-emerald-300 text-xs font-bold">
                             {formatCurrency(item.product.price * item.quantity)}
                           </span>
                           <button
@@ -357,7 +363,7 @@ export default function NewOrderPage() {
               {/* Delivery Address & Postal Centroid Selector */}
               <div className="glass-card p-4 space-y-3">
                 <label className="text-slate-400 text-xs font-medium flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                  <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                   Delivery Location
                 </label>
 
@@ -367,12 +373,12 @@ export default function NewOrderPage() {
                     onClick={() => setLocationMode("profile")}
                     className={`p-2.5 rounded-xl border text-left transition-all ${
                       locationMode === "profile"
-                        ? "bg-indigo-500/15 border-indigo-500/40 text-white font-medium"
+                        ? "bg-emerald-500/15 border-emerald-500/40 text-white font-medium"
                         : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
                     }`}
                   >
                     <p className="font-semibold text-white">Profile Address</p>
-                    <p className="text-[11px] text-indigo-300 mt-0.5 font-medium truncate">
+                    <p className="text-[11px] text-emerald-300 mt-0.5 font-medium truncate">
                       📍 {user?.location_city || "Saved Profile"}
                     </p>
                   </button>
@@ -382,7 +388,7 @@ export default function NewOrderPage() {
                     onClick={() => setLocationMode("custom")}
                     className={`p-2.5 rounded-xl border text-left transition-all ${
                       locationMode === "custom"
-                        ? "bg-indigo-500/15 border-indigo-500/40 text-white font-medium"
+                        ? "bg-emerald-500/15 border-emerald-500/40 text-white font-medium"
                         : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
                     }`}
                   >
@@ -478,11 +484,10 @@ export default function NewOrderPage() {
                 </div>
               )}
 
-              {/* Submit */}
               <button
                 onClick={handleSubmit}
                 disabled={cart.length === 0 || submitting}
-                className="btn-primary w-full flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Package className="w-4 h-4" />}
                 {submitting ? "Placing Order..." : `Place Order · ${formatCurrency(cartTotal)}`}

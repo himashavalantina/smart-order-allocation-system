@@ -4,8 +4,8 @@
   --bg-primary: #080b18;
   --bg-surface: #0f1424;
   --bg-surface-2: #161d35;
-  --border: rgba(99, 102, 241, 0.12);
-  --border-hover: rgba(99, 102, 241, 0.3);
+  --border: rgba(16, 185, 129, 0.12);
+  --border-hover: rgba(16, 185, 129, 0.3);
 }
 
 * {
@@ -17,8 +17,8 @@ body {
   color: #f1f5f9;
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 0%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+    radial-gradient(ellipse at 20% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 0%, rgba(20, 184, 166, 0.06) 0%, transparent 60%);
 }
 
 /* Glass card */
@@ -32,7 +32,7 @@ body {
 
 .glass-card:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.05);
 }
 
 /* Input base */
@@ -62,13 +62,13 @@ body {
 }
 
 .input-base:focus {
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Button variants */
 .btn-primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #10b981, #14b8a6);
   color: white;
   border: none;
   border-radius: 10px;
@@ -77,13 +77,13 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
   opacity: 0.9;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -106,12 +106,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(16, 185, 129, 0.3);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: rgba(16, 185, 129, 0.5);
 }
 
 /* Page wrapper */
@@ -129,7 +129,7 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1, #a855f7, #06b6d4);
+  background: linear-gradient(135deg, #10b981, #14b8a6, #06b6d4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -154,5 +154,5 @@ body {
 
 /* Auth card glow */
 .auth-glow {
-  box-shadow: 0 0 60px rgba(99, 102, 241, 0.1), 0 0 120px rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 60px rgba(16, 185, 129, 0.1), 0 0 120px rgba(16, 185, 129, 0.05);
 }

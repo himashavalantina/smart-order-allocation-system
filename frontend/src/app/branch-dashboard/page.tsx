@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
 import AddProductModal from "@/components/AddProductModal";
+import AICategoryBadge from "@/components/AICategoryBadge";
 import {
   Package,
   AlertTriangle,
@@ -21,7 +22,8 @@ import {
   Edit2,
   Trash2,
   Save,
-  X
+  X,
+  Brain
 } from "lucide-react";
 
 // Statuses the admin can transition an order to via the PATCH endpoint
@@ -150,9 +152,9 @@ export default function BranchDashboardPage() {
               </h1>
               <p className="text-slate-400 mt-2">Operational Command Center</p>
             </div>
-            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
-              <Activity className="w-5 h-5 text-indigo-400" />
-              <span className="text-indigo-100 font-medium text-sm">System Online</span>
+            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+              <Activity className="w-5 h-5 text-emerald-400" />
+              <span className="text-emerald-100 font-medium text-sm">System Online</span>
             </div>
           </div>
 
@@ -201,7 +203,7 @@ export default function BranchDashboardPage() {
               <div className="glass-card overflow-hidden h-full flex flex-col">
                 <div className="p-5 border-b border-white/5 flex items-center justify-between shrink-0">
                   <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <Package className="w-5 h-5 text-indigo-400" />
+                    <Package className="w-5 h-5 text-emerald-400" />
                     Actionable Orders Queue
                   </h2>
                 </div>
@@ -240,13 +242,34 @@ export default function BranchDashboardPage() {
                                     <span className="text-white font-medium">{item.quantity}x</span> {item.product_name}
                                   </span>
                                 ))}
+                                
+                                {order.customer_note && (
+                                  <div className="mt-2 pt-2 border-t border-white/5 space-y-2">
+                                    <p className="text-slate-400 text-[10px] font-medium uppercase tracking-wider flex items-center gap-1">
+                                      <Brain className="w-3 h-3" />
+                                      Customer Note
+                                    </p>
+                                    <p className="text-slate-300 text-xs bg-white/5 rounded px-2 py-1.5 leading-relaxed italic">
+                                      "{order.customer_note}"
+                                    </p>
+                                    {(order.ai_category || order.note_category) && (
+                                      <div className="flex items-center gap-2 flex-wrap mt-1">
+                                        <AICategoryBadge
+                                          category={(order.ai_category || order.note_category) as string}
+                                          confidence={order.ai_confidence || order.note_confidence}
+                                          size="sm"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </td>
                             <td className="px-5 py-4 text-right align-top">
                               <div className="flex flex-col items-end gap-2">
                                 <StatusBadge status={order.status} size="sm" />
                                 {isUpdating ? (
-                                  <div className="flex items-center gap-1.5 text-indigo-400 text-xs py-1.5">
+                                  <div className="flex items-center gap-1.5 text-emerald-400 text-xs py-1.5">
                                     <RefreshCw className="w-3 h-3 animate-spin" />
                                     Updating...
                                   </div>
@@ -254,7 +277,7 @@ export default function BranchDashboardPage() {
                                   <select
                                     value=""
                                     onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                    className="bg-[#0f1424] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500 hover:border-white/20 transition-all cursor-pointer"
+                                    className="bg-[#0f1424] border border-white/10 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-emerald-500 hover:border-white/20 transition-all cursor-pointer"
                                   >
                                     <option value="" disabled>Change Status...</option>
                                     {transitions.map((t) => (
@@ -292,12 +315,12 @@ export default function BranchDashboardPage() {
               <div className="glass-card overflow-hidden h-full flex flex-col">
                 <div className="p-5 border-b border-white/5 shrink-0 flex items-center justify-between">
                   <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <Box className="w-5 h-5 text-indigo-400" />
+                    <Box className="w-5 h-5 text-emerald-400" />
                     Current Inventory
                   </h2>
                   <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     Add Product
@@ -333,7 +356,7 @@ export default function BranchDashboardPage() {
                                   type="number"
                                   value={editStockValue}
                                   onChange={(e) => setEditStockValue(e.target.value)}
-                                  className="w-16 bg-[#0f1424] border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-indigo-500 text-right"
+                                  className="w-16 bg-[#0f1424] border border-white/10 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 text-right"
                                 />
                               ) : (
                                 <span className={`text-sm font-bold px-2 py-1 rounded-md ${
@@ -368,7 +391,7 @@ export default function BranchDashboardPage() {
                                       setEditingInvId(item.product_id);
                                       setEditStockValue(item.quantity.toString());
                                     }} 
-                                    className="text-indigo-400 hover:text-indigo-300"
+                                    className="text-emerald-400 hover:text-emerald-300"
                                   >
                                     <Edit2 className="w-4 h-4" />
                                   </button>

@@ -146,14 +146,14 @@ export default function AdminProductsPage() {
                     <tr key={product.id} className="hover:bg-white/2 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-                            <Package className="w-3.5 h-3.5 text-indigo-400" />
+                          <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <Package className="w-3.5 h-3.5 text-emerald-400" />
                           </div>
                           <span className="text-white text-sm font-medium">{product.name}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded-full">{product.category}</span>
+                        <span className="text-xs text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">{product.category}</span>
                       </td>
                       <td className="px-4 py-3 text-sm text-white font-medium">{formatCurrency(product.price)}</td>
                       <td className="px-4 py-3 text-xs text-slate-400 font-mono">{product.sku || "—"}</td>

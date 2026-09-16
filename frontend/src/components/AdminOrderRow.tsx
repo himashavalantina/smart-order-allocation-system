@@ -55,12 +55,12 @@ export default function AdminOrderRow({ order, onStatusChange }: OrderRowProps) 
   const displayConfidence = order.ai_confidence ?? order.note_confidence;
 
   return (
-    <div className="glass-card overflow-hidden hover:border-indigo-500/20 transition-all duration-200">
+    <div className="glass-card overflow-hidden hover:border-emerald-500/20 transition-all duration-200">
       {/* ── Row Header ─────────────────────────────────────────────────── */}
       <div className="p-4 flex items-start gap-4">
         {/* Icon */}
-        <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
-          <Package className="w-4 h-4 text-indigo-400" />
+        <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+          <Package className="w-4 h-4 text-emerald-400" />
         </div>
 
         {/* Info block */}
@@ -90,7 +90,7 @@ export default function AdminOrderRow({ order, onStatusChange }: OrderRowProps) 
               </p>
             )}
             {order.delivery_city && (
-              <p className="text-indigo-300 text-xs">{order.delivery_city}</p>
+              <p className="text-emerald-300 text-xs">{order.delivery_city}</p>
             )}
           </div>
         </div>
@@ -101,29 +101,9 @@ export default function AdminOrderRow({ order, onStatusChange }: OrderRowProps) 
             {formatCurrency(order.total_amount)}
           </span>
 
-          {/* Status selector */}
+          {/* Expand/Collapse */}
           <div className="flex items-center gap-1.5">
-            {updating && <RefreshCw className="w-3 h-3 text-indigo-400 animate-spin" />}
-            {isTerminal ? (
-              <span className="text-slate-600 text-[10px] italic">Terminal state</span>
-            ) : (
-              <select
-                id={`status-select-${order.id}`}
-                value=""
-                onChange={handleStatusSelect}
-                disabled={updating}
-                className="text-[10px] rounded-lg border border-white/10 bg-slate-800/80 text-slate-300 px-2 py-1 cursor-pointer hover:border-indigo-500/40 focus:outline-none focus:border-indigo-500/60 transition-all disabled:opacity-50"
-              >
-                <option value="" disabled>
-                  Move to…
-                </option>
-                {transitions.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            )}
+            {updating && <RefreshCw className="w-3 h-3 text-emerald-400 animate-spin" />}
 
             <button
               onClick={() => setExpanded(!expanded)}

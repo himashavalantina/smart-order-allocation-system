@@ -15,13 +15,13 @@ export default function StatsCard({
   label,
   value,
   icon: Icon,
-  iconColor = "text-indigo-400",
+  iconColor = "text-emerald-400",
   trend,
   trendUp,
   description,
 }: Props) {
   return (
-    <div className="glass-card p-5 flex flex-col gap-3 hover:border-indigo-500/30 transition-colors group">
+    <div className="glass-card p-5 flex flex-col gap-3 hover:border-emerald-500/30 transition-colors group">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">{label}</p>

@@ -73,7 +73,7 @@ export default function AdminOrdersPage() {
             <p className="text-slate-400 text-sm mt-1">
               {total} orders total
               <span className="mx-2 text-slate-600">·</span>
-              <span className="text-indigo-400">AI-classified notes shown as badges</span>
+              <span className="text-emerald-400">AI-classified notes shown as badges</span>
             </p>
           </div>
 
@@ -122,7 +122,7 @@ export default function AdminOrdersPage() {
                   }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                     statusFilter === s
-                      ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300"
+                      ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
                       : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
                   }`}
                 >

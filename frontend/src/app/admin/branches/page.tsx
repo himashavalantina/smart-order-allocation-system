@@ -113,7 +113,7 @@ export default function AdminBranchesPage() {
                       </div>
                       <Link
                         href={`/admin/branches/${branch.id}`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium hover:bg-indigo-500/20 transition-all shrink-0"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition-all shrink-0"
                       >
                         <LayoutDashboard className="w-3.5 h-3.5" />
                         Dashboard
@@ -148,7 +148,7 @@ export default function AdminBranchesPage() {
                       ) : (
                         <button
                           onClick={() => startEditInventory(branch)}
-                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium hover:bg-indigo-500/20 transition-all"
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition-all"
                         >
                           <Edit2 className="w-3 h-3" />
                           Edit

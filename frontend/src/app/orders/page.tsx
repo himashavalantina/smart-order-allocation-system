@@ -60,7 +60,7 @@ export default function OrdersPage() {
                 onClick={() => { setStatusFilter(s); setPage(1); }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                   statusFilter === s
-                    ? "bg-indigo-500/20 border-indigo-500/40 text-indigo-300"
+                    ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
                     : "bg-white/3 border-white/8 text-slate-400 hover:text-white hover:bg-white/8"
                 }`}
               >

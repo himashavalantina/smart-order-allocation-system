@@ -15,7 +15,7 @@ export default function LoadingSpinner({ size = "md", className }: Props) {
   return (
     <div
       className={cn(
-        "rounded-full border-white/10 border-t-indigo-500 animate-spin",
+        "rounded-full border-white/10 border-t-emerald-500 animate-spin",
         sizeClasses[size],
         className
       )}
