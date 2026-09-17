@@ -104,7 +104,7 @@ export default function BranchDashboardPage() {
   };
 
   const handleDeleteProduct = async (productId: number) => {
-    if (!confirm("Are you sure you want to remove this product? It will set stock to 0.")) return;
+    if (!confirm("Are you sure you want to remove this product? If no other branches have this product, it will be permanently deleted from the system.")) return;
     setInvLoadingId(productId);
     try {
       await api.delete(`/branch/inventory/${productId}`);
@@ -233,7 +233,26 @@ export default function BranchDashboardPage() {
                               <span className="text-slate-300 text-sm">{formatDate(order.created_at)}</span>
                             </td>
                             <td className="px-5 py-4 align-top">
-                              <span className="text-slate-300 text-sm">{order.customer_name}</span>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-slate-300 text-sm font-medium">{order.customer_name}</span>
+                                {order.delivery_mobile && (
+                                  <span className="text-xs text-slate-400 flex items-center gap-1">
+                                    📞 {order.delivery_mobile}
+                                  </span>
+                                )}
+                                {(order.delivery_address_line_1 || order.delivery_postal_code) && (
+                                  <div className="text-xs text-slate-400 mt-1">
+                                    <p className="flex items-start gap-1">
+                                      <span>📍</span>
+                                      <span className="flex-1">
+                                        {order.delivery_address_line_1}
+                                        {order.delivery_address_line_2 && <>, {order.delivery_address_line_2}</>}
+                                        {order.delivery_postal_code && <><br/>Postal Code: {order.delivery_postal_code}</>}
+                                      </span>
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
                             </td>
                             <td className="px-5 py-4 align-top">
                               <div className="flex flex-col gap-1.5">

@@ -112,21 +112,26 @@ export default function NewOrderPage() {
       return;
     }
 
+    if (mobileNumber && mobileNumber.replace(/\D/g, '').length < 10) {
+      setError("Mobile number must be at least 10 digits.");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
     // Resolve delivery coordinates
     const deliveryLat = locationMode === "profile"
-      ? profileLocation.lat
+      ? undefined
       : customLocation!.lat;
     const deliveryLng = locationMode === "profile"
-      ? profileLocation.lng
+      ? undefined
       : customLocation!.lng;
     const deliveryCity = locationMode === "profile"
-      ? profileLocation.city
+      ? user?.location_city
       : customLocation!.city;
     const deliveryDistrict = locationMode === "profile"
-      ? profileLocation.district
+      ? user?.location_district
       : customLocation!.district;
     const deliveryPostalCode = locationMode === "profile"
       ? user?.postal_code

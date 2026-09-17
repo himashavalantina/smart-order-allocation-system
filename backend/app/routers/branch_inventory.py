@@ -114,7 +114,7 @@ def remove_from_inventory(
     db: Session = Depends(get_db),
     manager: User = Depends(require_branch_manager),
 ):
-    """Remove a product from the branch's inventory (soft delete by setting stock to 0)."""
+    """Remove a product from the branch's inventory. If no other branches have it, delete the product globally."""
     inv = (
         db.query(Inventory)
         .filter(Inventory.branch_id == manager.branch_id, Inventory.product_id == product_id)
@@ -126,6 +126,14 @@ def remove_from_inventory(
             detail="Product not found in this branch's inventory"
         )
     
-    inv.quantity = 0
+    db.delete(inv)
+    db.flush()
+
+    other_inv_count = db.query(Inventory).filter(Inventory.product_id == product_id).count()
+    if other_inv_count == 0:
+        product = db.query(Product).filter(Product.id == product_id).first()
+        if product:
+            db.delete(product)
+
     db.commit()
     return None

@@ -48,9 +48,15 @@ def _build_order_response(db: Session, order: Order) -> OrderResponse:
 
     customer_name = order.customer.full_name if order.customer else None
 
+    customer_order_number = db.query(Order).filter(
+        Order.customer_id == order.customer_id,
+        Order.id <= order.id
+    ).count()
+
     return OrderResponse(
         id=order.id,
         customer_id=order.customer_id,
+        customer_order_number=customer_order_number,
         customer_name=customer_name,
         status=order.status,
         allocated_branch_id=order.allocated_branch_id,

@@ -57,6 +57,7 @@ class OrderItemResponse(BaseModel):
 class OrderResponse(BaseModel):
     id: int
     customer_id: int
+    customer_order_number: Optional[int] = None
     customer_name: Optional[str] = None
     status: str
     allocated_branch_id: Optional[int] = None

@@ -64,6 +64,7 @@ export type OrderStatus =
 export interface Order {
   id: number;
   customer_id: number;
+  customer_order_number?: number;
   customer_name: string | null;
   status: OrderStatus;
   allocated_branch_id: number | null;

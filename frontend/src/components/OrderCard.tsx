@@ -36,7 +36,7 @@ export default function OrderCard({ order, onCancel, showCustomer }: Props) {
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-white font-semibold text-sm">Order #{order.id}</span>
+              <span className="text-white font-semibold text-sm">Order #{order.customer_order_number ?? order.id}</span>
               <StatusBadge status={order.status as any} size="sm" />
             </div>
             {showCustomer && order.customer_name && (
@@ -92,8 +92,8 @@ export default function OrderCard({ order, onCancel, showCustomer }: Props) {
               <p className="text-slate-300 text-xs bg-white/3 rounded-lg px-3 py-2 border border-white/5">
                 {order.customer_note}
               </p>
-              {displayCategory && (
-                <div className="flex items-center gap-2">
+              {showCustomer && displayCategory && (
+                <div className="flex items-center gap-2 mt-1">
                   <span
                     className={cn(
                       "text-xs px-2 py-0.5 rounded-full border font-medium",
@@ -108,6 +108,24 @@ export default function OrderCard({ order, onCancel, showCustomer }: Props) {
                   </span>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Delivery Details */}
+          {(order.delivery_mobile || order.delivery_address_line_1 || order.delivery_postal_code) && (
+            <div className="space-y-1.5">
+              <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Delivery Details</p>
+              <div className="text-slate-300 text-xs bg-white/3 rounded-lg px-3 py-2 border border-white/5 space-y-1">
+                {order.delivery_mobile && <p>📞 {order.delivery_mobile}</p>}
+                {(order.delivery_address_line_1 || order.delivery_postal_code) && (
+                  <p>
+                    📍 {order.delivery_address_line_1}
+                    {order.delivery_address_line_2 && <>, {order.delivery_address_line_2}</>}
+                    {order.delivery_city && <>, {order.delivery_city}</>}
+                    {order.delivery_postal_code && <> ({order.delivery_postal_code})</>}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
