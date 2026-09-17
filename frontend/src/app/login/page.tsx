@@ -38,18 +38,6 @@ export default function LoginPage() {
     }
   };
 
-  // const fillDemoCredentials = (role: 'admin' | 'manager' | 'user') => {
-  //   if (role === 'admin') {
-  //     setEmail("admin@orderalloc.lk");
-  //     setPassword("Admin@123");
-  //   } else if (role === 'manager') {
-  //     setEmail("manager@colombo03.com");
-  //     setPassword("Manager@123");
-  //   } else {
-  //     setEmail("kavya@example.com");
-  //     setPassword("Customer@123");
-  //   }
-  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden bg-[#080b18]">
@@ -174,33 +162,6 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Quick Fill Demo Credentials */}
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <p className="text-xs text-slate-500 text-center mb-3 font-medium uppercase tracking-wide">Quick Fill Demo Credentials</p>
-            <div className="flex flex-wrap justify-center gap-2">
-              <button
-                type="button"
-                onClick={() => fillDemoCredentials('admin')}
-                className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition-colors shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)]"
-              >
-                Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemoCredentials('manager')}
-                className="px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-medium hover:bg-violet-500/20 transition-colors shadow-[0_0_10px_rgba(139,92,246,0.1)] hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"
-              >
-                Manager
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemoCredentials('user')}
-                className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium hover:bg-blue-500/20 transition-colors shadow-[0_0_10px_rgba(59,130,246,0.1)] hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]"
-              >
-                User
-              </button>
-            </div>
-          </div>
 
           <div className="mt-6 pt-5 border-t border-white/5 text-center">
             <p className="text-slate-500 text-sm">
