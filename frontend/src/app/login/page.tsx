@@ -38,18 +38,18 @@ export default function LoginPage() {
     }
   };
 
-  const fillDemoCredentials = (role: 'admin' | 'manager' | 'user') => {
-    if (role === 'admin') {
-      setEmail("admin@orderalloc.lk");
-      setPassword("Admin@123");
-    } else if (role === 'manager') {
-      setEmail("manager@colombo03.com");
-      setPassword("Manager@123");
-    } else {
-      setEmail("kavya@example.com");
-      setPassword("Customer@123");
-    }
-  };
+  // const fillDemoCredentials = (role: 'admin' | 'manager' | 'user') => {
+  //   if (role === 'admin') {
+  //     setEmail("admin@orderalloc.lk");
+  //     setPassword("Admin@123");
+  //   } else if (role === 'manager') {
+  //     setEmail("manager@colombo03.com");
+  //     setPassword("Manager@123");
+  //   } else {
+  //     setEmail("kavya@example.com");
+  //     setPassword("Customer@123");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden bg-[#080b18]">
