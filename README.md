@@ -8,6 +8,21 @@ A comprehensive, full-stack application built for the Software Engineer Intern T
 
 ---
 
+## ✅ Core Features Implemented
+- [x] Customer order creation with product and quantity selection
+- [x] Customer and location information capture (Address, Mobile, Postal Code)
+- [x] Multiple branches with dynamic stock and workload information
+- [x] Automatic branch allocation using a multi-criteria scoring algorithm
+- [x] Order status management (Pending, Allocated, Processing, Delivered, Cancelled)
+- [x] Role-based Dashboards (Customer, Branch Manager, System Admin)
+- [x] Search and filtering capabilities across orders and inventory
+- [x] Persistent database storage using SQLite (SQLAlchemy)
+- [x] Fully functional Backend APIs built with FastAPI
+- [x] Responsive, modern frontend using Next.js and Tailwind CSS
+- [x] Proper validation, error handling, and robust edge-case management
+
+---
+
 ## 💻 Technologies Used
 - **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Zustand, Lucide Icons.
 - **Backend:** Python 3.10+, FastAPI, SQLAlchemy (ORM), SQLite.
@@ -94,6 +109,7 @@ Security was prioritized across the stack:
 4. **Input Validation:** FastAPI and Pydantic enforce strict payload schemas, rejecting invalid or malicious payloads before they hit business logic.
 5. **Rate Limiting:** Sensitive endpoints are protected against brute-force attacks using `slowapi` (e.g., Logins are strictly limited to 5 attempts per minute per IP).
 6. **Secrets:** Private keys for JWT generation are handled securely via `.env` files.
+7. **HTTPS Readiness:** The application relies on secure cookies and authorization headers, designed to be deployed behind a reverse proxy (like Nginx or Cloudflare) that enforces HTTPS for encrypted transit in production.
 
 ---
 
@@ -109,3 +125,12 @@ An AI classifier was built to automatically categorize customer order notes (e.g
 1. **Dataset & Preprocessing:** The provided dataset was cleaned, and text features were extracted using a `TfidfVectorizer`.
 2. **Model Training:** A Scikit-Learn `MultinomialNB` (Naive Bayes) classifier was trained. (The script is provided in `train.py`).
 3. **Inference & Fallback:** When a customer submits a note, the backend predicts the category and calculates a confidence score (probability). If the confidence is below a defined threshold (e.g., 50%), the system gracefully falls back to "General Inquiry / Uncategorized" rather than making an inaccurate guess.
+
+---
+
+## ✨ Recent Polish & Enhancements
+- **Premium Glassmorphism UI:** Redesigned the authentication and ordering interfaces with deep translucent glass cards, dynamic background gradients, micro-interactions, and integrated social login flows.
+- **Dynamic Customer Order Sequencing:** Customer dashboards intelligently display sequential, customer-relative order numbers (Order #1, Order #2) calculated dynamically via the backend, rather than exposing global database IDs.
+- **Robust Inventory Deletion:** Added smart permanent product deletion. If a branch manager deletes a product, the backend securely checks if any other branch holds inventory. If not, the product is completely wiped from the global database.
+- **Accurate Geolocation Resolution:** Upgraded the frontend-to-backend location mapping. The frontend now defers exact postal code centroid lookups to the backend's robust, in-memory CSV engine, guaranteeing highly accurate order routing.
+- **Refined Dashboards:** Enhanced both the Customer and Branch Manager dashboards to prominently display actionable delivery details (phone numbers, full addresses) while abstracting away internal ML metrics from the customer view.
