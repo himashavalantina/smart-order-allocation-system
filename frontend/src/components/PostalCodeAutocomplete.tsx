@@ -128,11 +128,10 @@ export default function PostalCodeAutocomplete({
           onFocus={() => {
             if (!selected && results.length > 0) setOpen(true);
           }}
-          className={`input-base pl-9 pr-8 font-mono text-xs w-full transition-all ${
-            selected
+          className={`input-base !pl-10 pr-8 font-mono text-xs w-full transition-all ${selected
               ? "cursor-default text-emerald-300 border-emerald-500/30 bg-emerald-500/5"
               : ""
-          }`}
+            }`}
         />
 
         {/* Selected badge or clear button */}

@@ -250,11 +250,10 @@ export default function NewOrderPage() {
                     <button
                       key={cat}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${
-                        selectedCategory === cat
-                          ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
-                          : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
-                      }`}
+                      className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${selectedCategory === cat
+                        ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300"
+                        : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
+                        }`}
                     >
                       {cat}
                     </button>
@@ -273,8 +272,8 @@ export default function NewOrderPage() {
                       <div key={product.id} className="bg-slate-800 rounded-xl border border-transparent overflow-hidden group hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all duration-300 flex flex-col">
                         <div className="relative aspect-[4/3] overflow-hidden bg-slate-900 border-b border-white/5">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
-                            src={product.image_url || `https://picsum.photos/seed/${product.id}/400/400`} 
+                          <img
+                            src={product.image_url || `https://picsum.photos/seed/${product.id}/400/400`}
                             alt={product.name}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-xl"
                           />
@@ -283,7 +282,7 @@ export default function NewOrderPage() {
                           <span className="inline-block w-max px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-2 line-clamp-1">{product.category}</span>
                           <h3 className="text-white text-sm font-semibold leading-tight line-clamp-2 min-h-[40px]">{product.name}</h3>
                           <p className="text-emerald-400 font-bold text-xl mt-2 mb-4">{formatCurrency(product.price)}</p>
-                          
+
                           <div className="mt-auto">
                             {cartItem ? (
                               <div className="flex items-center justify-between bg-slate-900/50 border border-white/5 rounded-xl p-1 shadow-inner">
@@ -361,7 +360,7 @@ export default function NewOrderPage() {
               </div>
 
               {/* Delivery Address & Postal Centroid Selector */}
-              <div className="glass-card p-4 space-y-3">
+              <div className="glass-card p-4 space-y-3 relative z-10">
                 <label className="text-slate-400 text-xs font-medium flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                   Delivery Location
@@ -371,11 +370,10 @@ export default function NewOrderPage() {
                   <button
                     type="button"
                     onClick={() => setLocationMode("profile")}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
-                      locationMode === "profile"
-                        ? "bg-emerald-500/15 border-emerald-500/40 text-white font-medium"
-                        : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
-                    }`}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${locationMode === "profile"
+                      ? "bg-emerald-500/15 border-emerald-500/40 text-white font-medium"
+                      : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
+                      }`}
                   >
                     <p className="font-semibold text-white">Profile Address</p>
                     <p className="text-[11px] text-emerald-300 mt-0.5 font-medium truncate">
@@ -386,11 +384,10 @@ export default function NewOrderPage() {
                   <button
                     type="button"
                     onClick={() => setLocationMode("custom")}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
-                      locationMode === "custom"
-                        ? "bg-emerald-500/15 border-emerald-500/40 text-white font-medium"
-                        : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
-                    }`}
+                    className={`p-2.5 rounded-xl border text-left transition-all ${locationMode === "custom"
+                      ? "bg-emerald-500/15 border-emerald-500/40 text-white font-medium"
+                      : "bg-white/3 border-white/8 text-slate-400 hover:text-white"
+                      }`}
                   >
                     <p className="font-semibold text-white">Custom Location</p>
                     <p className="text-[11px] text-slate-400 mt-0.5">Different address</p>
@@ -427,32 +424,32 @@ export default function NewOrderPage() {
                       <PostalCodeAutocomplete
                         value={customLocation?.postal_code || ""}
                         onChange={(result) => setCustomLocation(result)}
-                        placeholder="Type postal code or area…"
+                        placeholder="  Type postal code or area…"
                       />
                     </div>
 
                     {/* Auto-filled read-only fields */}
                     {customLocation && (
-                    <div className="grid grid-cols-2 gap-2 pt-1">
-                      <div className="space-y-1">
-                        <label className="text-slate-500 text-[10px]">Auto-Filled City</label>
-                        <input
-                          type="text"
-                          readOnly
-                          className="input-base bg-white/5 text-slate-300 border-white/5 cursor-not-allowed text-xs font-semibold"
-                          value={customLocation.city}
-                        />
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div className="space-y-1">
+                          <label className="text-slate-500 text-[10px]">Auto-Filled City</label>
+                          <input
+                            type="text"
+                            readOnly
+                            className="input-base bg-white/5 text-slate-300 border-white/5 cursor-not-allowed text-xs font-semibold"
+                            value={customLocation.city}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-slate-500 text-[10px]">Auto-Filled District</label>
+                          <input
+                            type="text"
+                            readOnly
+                            className="input-base bg-white/5 text-slate-300 border-white/5 cursor-not-allowed text-xs font-semibold"
+                            value={customLocation.district}
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-slate-500 text-[10px]">Auto-Filled District</label>
-                        <input
-                          type="text"
-                          readOnly
-                          className="input-base bg-white/5 text-slate-300 border-white/5 cursor-not-allowed text-xs font-semibold"
-                          value={customLocation.district}
-                        />
-                      </div>
-                    </div>
                     )}
                   </div>
                 )}
