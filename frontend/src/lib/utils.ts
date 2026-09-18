@@ -65,8 +65,16 @@ export const CATEGORY_COLORS: Record<string, string> = {
 
 export function getImageUrl(url?: string | null): string {
   if (!url) return "";
+  
+  // Replace hardcoded localhost URLs from local testing
+  if (url.startsWith("http://localhost:8000")) {
+    return url.replace("http://localhost:8000", "https://smart-order-allocation-system.onrender.com");
+  }
+
+  // Handle relative paths
   if (url.startsWith("/")) {
     return `https://smart-order-allocation-system.onrender.com${url}`;
   }
+  
   return url;
 }
