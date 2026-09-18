@@ -30,11 +30,36 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: Props) {
     try {
       let imageUrl = null;
 
+      // // 1. Upload the image if one is selected
+      // if (imageFile) {
+      //   const formData = new FormData();
+      //   formData.append("file", imageFile);
+
+      //   const uploadRes = await api.post("/upload", formData, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   });
+      //   imageUrl = uploadRes.data.image_url;
+      // }
+
+
+      // // 2. Add product to inventory
+      // await api.post("/branch/inventory", {
+      //   product_name: productName,
+      //   description: description,
+      //   category: category,
+      //   stock: parseInt(stock, 10),
+      //   price: price ? parseFloat(price) : 0,
+      //   image_url: imageUrl,
+      // });
+
+      //comment this for local host 
       // 1. Upload the image if one is selected
       if (imageFile) {
         const formData = new FormData();
         formData.append("file", imageFile);
-        
+
         const uploadRes = await api.post("/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -43,6 +68,14 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: Props) {
         imageUrl = uploadRes.data.image_url;
       }
 
+      // Format the image URL to include the Render backend domain if it's relative
+      const formatImageUrl = (url: string | null) => {
+        if (!url) return null;
+        if (url.startsWith("http")) return url;
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || "https://smart-order-allocation-system.onrender.com";
+        return `${backendUrl}${url}`;
+      };
+
       // 2. Add product to inventory
       await api.post("/branch/inventory", {
         product_name: productName,
@@ -50,7 +83,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: Props) {
         category: category,
         stock: parseInt(stock, 10),
         price: price ? parseFloat(price) : 0,
-        image_url: imageUrl,
+        image_url: formatImageUrl(imageUrl), // <-- Passed through the formatter here!
       });
 
       onSuccess();
@@ -71,11 +104,11 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-[#0a0d1a]/80 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative w-full max-w-md glass-card rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between bg-white/5">
@@ -83,7 +116,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: Props) {
             <PackagePlus className="w-5 h-5 text-emerald-400" />
             Add New Product
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
           >
@@ -129,7 +162,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: Props) {
                 <option value="Books">Books</option>
               </select>
             </div>
-            
+
             <div className="space-y-1.5">
               <label className="text-slate-400 text-xs font-medium uppercase tracking-wider">
                 Initial Stock
