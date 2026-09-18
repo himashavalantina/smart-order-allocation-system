@@ -3,8 +3,8 @@
 A comprehensive, full-stack application built for the Software Engineer Intern Technical Assessment. This system intelligently allocates incoming customer e-commerce orders to the optimal branch based on stock availability, geographic location, and branch workload. 
 
 ## 🚀 Live Application URL & Repository
-- **GitHub Repository URL**: [Your GitHub URL Here]
-- **Live Application URL**: [Your Live URL Here] *(If deployed)*
+- **GitHub Repository URL**: https://github.com/himashavalantina/smart-order-allocation-system.git
+- **Live Application URL**: https://smart-order-allocation-system-two.vercel.app/
 
 ---
 
