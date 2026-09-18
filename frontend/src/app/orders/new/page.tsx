@@ -9,7 +9,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import StatusBadge from "@/components/StatusBadge";
 import { Product, Order } from "@/lib/types";
 import { getPostalCodeLocation } from "@/lib/locationData";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getImageUrl } from "@/lib/utils";
 import api from "@/lib/api";
 import PostalCodeAutocomplete, { PostalCodeResult } from "@/components/PostalCodeAutocomplete";
 import {
@@ -278,7 +278,7 @@ export default function NewOrderPage() {
                         <div className="relative aspect-[4/3] overflow-hidden bg-slate-900 border-b border-white/5">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={product.image_url || `https://picsum.photos/seed/${product.id}/400/400`}
+                            src={getImageUrl(product.image_url) || `https://picsum.photos/seed/${product.id}/400/400`}
                             alt={product.name}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-xl"
                           />

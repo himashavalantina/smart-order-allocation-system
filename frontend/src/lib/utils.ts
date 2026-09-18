@@ -62,3 +62,11 @@ export const CATEGORY_COLORS: Record<string, string> = {
   "General Inquiry": "text-slate-400 bg-slate-400/10 border-slate-400/30",
   "Needs Manual Review": "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",
 };
+
+export function getImageUrl(url?: string | null): string {
+  if (!url) return "";
+  if (url.startsWith("/")) {
+    return `https://smart-order-allocation-system.onrender.com${url}`;
+  }
+  return url;
+}
